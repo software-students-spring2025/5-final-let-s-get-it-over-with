@@ -1,33 +1,50 @@
-from flask import Flask, render_template, redirect, url_for
-from flask_pymongo import PyMongo
-from flask_login import LoginManager, current_user
+from flask import Flask, render_template, redirect, url_for, session, flash, request, make_response
+from dotenv import load_dotenv
 import os
-from auth.models import User
-from auth import create_auth_blueprint 
 
-app = Flask(__name__) 
+# Import auth blueprint
+from auth.routes import auth_bp
 
+# Load environment variables
+load_dotenv()
 
-#connects the app.py to config settings from config.py file in class named Config
-app.config.from_object('config.Config') 
+app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", "default_secret_key")
 
-#initialize pyMongo, database already set to chatbots 
-mongo = PyMongo(app)  
+# Register blueprint
+app.register_blueprint(auth_bp)
 
-#initialize login manager 
-login_manager = LoginManager() 
+# Add cache control headers to all responses
+@app.after_request
+def add_cache_control(response):
+    # Prevent caching for authenticated pages
+    if 'username' in session:
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+    return response
 
-#configure for login 
-login_manager.init_app(app)
+@app.route('/')
+def home():
+    # Check if user is logged in
+    if 'username' in session:
+        # Additional check to verify if the session is still valid
+        from auth import users_collection
+        user_exists = users_collection.find_one({"username": session['username']})
+        if not user_exists:
+            # If user doesn't exist in database, clear session
+            session.clear()
+            flash('Your session has expired. Please log in again.', 'error')
+            return redirect(url_for('auth.login'))
+            
+        response = make_response(render_template('dashboard.html', username=session['username']))
+        # Set cache control headers
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+        return response
+    return redirect(url_for('auth.login'))
 
-#configures flask-login behavior when it gets to a protected route that uses @login_required decorator 
-login_manager.login_view = 'auth.login'
-
-@login_manager.user_loader
-def findUser(user_id):
-  user_data = mongo.db.users.find_one({'_id' : user_id})  
-  return User(user_data) if user_data else None
-
-
-
-
+if __name__ == '__main__': 
+    #RUNS ON 5001
+    app.run(host='0.0.0.0', port=5001)  
