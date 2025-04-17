@@ -1,0 +1,56 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/static/fonts/Inter-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/static/fonts/Inter-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+.chat {
+    width: 340px;
+    height: 500px;
+    background-color: #18181B;
+    color: #EFEFF1;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+position: relative;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 0;
+}
+
+.message-wrapper {
+    padding: 4px 10px;
+  }
+  
+  .message-content {
+    display: inline;
+    word-break: break-word;
+    white-space: normal;
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+  
+  .message-username {
+    font-weight: 700;
+  }
+  
