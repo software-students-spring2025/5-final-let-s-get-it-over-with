@@ -1,0 +1,27 @@
+services:
+  web-app:
+    build:   
+      context: ./web-app 
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      - mongodb
+
+    env_file: 
+    - .env
+
+    volumes:
+      - ./web-app:/app
+    restart: always
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+volumes:
+  mongodb_data:
