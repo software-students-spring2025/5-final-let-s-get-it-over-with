@@ -66,4 +66,4 @@ def proxy_generate_comment():
 
 if __name__ == '__main__': 
     #RUNS ON 5001
-    app.run(host='0.0.0.0', port=5001)  
+    app.run(debug=True, host='0.0.0.0', port=5001)  

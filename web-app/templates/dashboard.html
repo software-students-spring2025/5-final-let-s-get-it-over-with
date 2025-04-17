@@ -8,27 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat-style.css') }}">
     <style>
-        @font-face {
-            font-family: 'Inter';
-            src: url('/static/fonts/Inter-Regular.woff') format('woff');
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'Inter';
-            src: url('/static/fonts/Inter-Bold.woff') format('woff');
-            font-weight: 700;
-            font-style: normal;
-        }
-
         * {
             padding: 0;
             margin: 0;
             box-sizing: border-box;
         }
+
         body {
             background-color: #f8f9fa;
             padding-top: 50px;
@@ -52,46 +39,6 @@
 
         .alert {
             margin-bottom: 15px;
-        }
-
-        .chat {
-            width: 340px;
-            height: 500px;
-            background-color: #18181B;
-            color: #EFEFF1;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            display: flex;
-            align-items: end;
-        }
-
-        .message-wrapper {
-            display: flex;
-            gap: 5px;
-            padding: 5px 20px
-
-        }
-
-        .message {
-            margin: 0;
-        }
-        .message-username {
-            font-weight: 700;
-            color: #FF0000;
-            /* color: #0000FF;
-            color: #008000;
-            color: #B22222;
-            color: #FF7F50;
-            color: #9ACD32;
-            color: #FF4500;
-            color: #2E8B57;
-            color: #DAA520;
-            color: #D2691E;
-            color: #5F9EA0;
-            color: #1E90FF;
-            color: #FF69B4;
-            color: #8A2BE2;
-            color: #00FF7F; */
         }
     </style>
 </head>
@@ -127,16 +74,9 @@
                     </div>
                 </div>
 
-                <div class="chat">
-                    <div class="message-wrapper">
-                        <div class="message-icons">
-                            <img src="{{ url_for('static', filename='badges/mod.png') }}" alt="Mod Badge">
-                            <!-- <img src="{{ url_for('static', filename='badges/prime.png') }}" alt="Prime Badge">
-                            <img src="{{ url_for('static', filename='badges/turbo.png') }}" alt="Turbo Badge"> -->
+                <div class="chat" id="chat-box">
+                    <div class="messages" id="messages">
 
-                        </div>
-                        <p class="message"><span class="message-username">username</span>: <span
-                                class="message-content">message</span></p>
                     </div>
                 </div>
             </div>
@@ -183,24 +123,24 @@
             console.log("Sending Frames ... ")
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-     
+
             // Copy the current webcam frame onto the canvas aka screenshot
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
+
             // Convert the canvas image into a base64-encoded jpeg
             const dataURL = canvas.toDataURL("image/jpeg");
-    
+
             // Send the image to the ML-client via JSON string
             fetch("/generate-comment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ image: dataURL })
             })
-            .then(res => res.json())
-            .then(data => {
-                showComment(data.comment);
-            });
-    
+                .then(res => res.json())
+                .then(data => {
+                    showComment(data.comment);
+                });
+
             detectionTimeout = setTimeout(sendFrame, 5000); // send a snapshot 5 seconds
         }
 
@@ -213,7 +153,7 @@
         function stopDetection() {
             isDetecting = false;
             toggleBtn.textContent = "Start Live Streaming";
-            clearTimeout(detectionTimeout);    
+            clearTimeout(detectionTimeout);
         }
 
         // Toggle button handler for live streaming
@@ -226,11 +166,52 @@
         });
 
         function showComment(comment) {
-            const chatBox = document.createElement("p");
-            chatBox.textContent = comment;
-            document.body.appendChild(chatBox);
+            const chat = document.getElementById("chat-box");
+            const messages = document.getElementById("messages");
+
+            // Create wrapper
+            const wrapper = document.createElement("div");
+            wrapper.className = "message-wrapper";
+
+            // Create inline message content container
+            const content = document.createElement("div");
+            content.className = "message-content";
+
+            // Add random badges
+            const badgeList = ["mod.png", "prime.png", "turbo.png"];
+            const shuffledBadges = badgeList.sort(() => 0.5 - Math.random());
+            const badgeCount = Math.floor(Math.random() * (badgeList.length + 1));
+            const selectedBadges = shuffledBadges.slice(0, badgeCount);
+
+            selectedBadges.forEach(badge => {
+                const img = document.createElement("img");
+                img.src = `/static/badges/${badge}`;
+                img.alt = badge.split(".")[0];
+                img.style.height = "18px";
+                img.style.verticalAlign = "middle";
+                img.style.marginRight = "2px";
+                content.appendChild(img);
+            });
+
+            // Random color for username
+            const usernameColors = [
+                "#FF0000", "#0000FF", "#008000", "#B22222", "#FF7F50", "#9ACD32", "#FF4500",
+                "#2E8B57", "#DAA520", "#D2691E", "#5F9EA0", "#1E90FF", "#FF69B4", "#8A2BE2", "#00FF7F"
+            ];
+            const usernameColor = usernameColors[Math.floor(Math.random() * usernameColors.length)];
+
+            // Append full message line
+            const message = document.createElement("span");
+            message.className = "message";
+            message.innerHTML = `<span class="message-username" style="color:${usernameColor}">chatuser</span>: ${comment}`;
+
+            content.appendChild(message);
+            wrapper.appendChild(content);
+            messages.appendChild(wrapper);
+            chat.scrollTop = chat.scrollHeight;
         }
-        
+
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
