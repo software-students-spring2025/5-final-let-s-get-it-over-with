@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, session, flash, request, make_response
 from dotenv import load_dotenv
 import os
+import requests
 
 # Import auth blueprint
 from auth.routes import auth_bp
@@ -44,6 +45,24 @@ def home():
         response.headers['Expires'] = '-1'
         return response
     return redirect(url_for('auth.login'))
+
+@app.route("/generate-comment", methods=["POST"])
+def proxy_generate_comment():
+    print("Transfering control to the ml-client ...")
+
+    try:
+        print("DEBUG: sending info")
+        ml_url = "http://ml-client:8000/generate-comment"  # Internal Docker service name
+        data = request.get_json() or {}
+        res = requests.post(ml_url, json=request.get_json())
+        # print("DEBUG: data recieved", data)
+        return res.json(), res.status_code
+
+    except Exception as e:
+        print("Error contacting ml-client:", e)
+        return {"error": "ML service unreachable"}, 500
+
+
 
 if __name__ == '__main__': 
     #RUNS ON 5001
