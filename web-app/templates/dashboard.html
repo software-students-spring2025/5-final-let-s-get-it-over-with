@@ -140,9 +140,98 @@
                     </div>
                 </div>
             </div>
+            <section>
+                <h2>Fake It Till You Make It - Live Feed</h2>
+
+                <div class="video-container">
+                    <video id="video" width="400" autoplay></video>
+                    <div class="button-group">
+                        <button id="toggle-btn">Start Live Streaming</button>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
+    <script>
+        const video = document.getElementById("video");
+        const toggleBtn = document.getElementById("toggle-btn");
+
+        // Capture frames from the video 
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        let isDetecting = false;
+        let detectionTimeout = null;
+        let mediaStream = null;
+
+        // Ask permission to use the webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                mediaStream = stream;
+                video.srcObject = stream;
+
+                video.onloadeddata = () => {
+                    // Automatically start detection when video is ready
+                    startDetection();
+                }
+            });
+
+        function sendFrame() {
+            if (!isDetecting) return;
+
+            console.log("Sending Frames ... ")
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+     
+            // Copy the current webcam frame onto the canvas aka screenshot
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+            // Convert the canvas image into a base64-encoded jpeg
+            const dataURL = canvas.toDataURL("image/jpeg");
+    
+            // Send the image to the ML-client via JSON string
+            fetch("/generate-comment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image: dataURL })
+            })
+            .then(res => res.json())
+            .then(data => {
+                showComment(data.comment);
+            });
+    
+            detectionTimeout = setTimeout(sendFrame, 5000); // send a snapshot 5 seconds
+        }
+
+        function startDetection() {
+            isDetecting = true;
+            toggleBtn.textContent = "Stop Live Stream";
+            sendFrame();
+        }
+
+        function stopDetection() {
+            isDetecting = false;
+            toggleBtn.textContent = "Start Live Streaming";
+            clearTimeout(detectionTimeout);    
+        }
+
+        // Toggle button handler for live streaming
+        toggleBtn.addEventListener("click", () => {
+            if (isDetecting) {
+                stopDetection();
+            } else {
+                startDetection();
+            }
+        });
+
+        function showComment(comment) {
+            const chatBox = document.createElement("p");
+            chatBox.textContent = comment;
+            document.body.appendChild(chatBox);
+        }
+        
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 

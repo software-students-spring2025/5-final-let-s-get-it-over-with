@@ -1,21 +1,17 @@
 FROM python:3.11-slim
 
-WORKDIR /app
+WORKDIR /ml-client
 
 # Copy requirements first for better layer caching
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
 COPY . .
 
-# Set environment variables
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-ENV FLASK_ENV=production
-
 # Expose the port
-EXPOSE 5000
+EXPOSE 8000
 
 # Command to run the application
-CMD ["python", "app.py"]
+CMD ["python", "-u", "comments.py"]

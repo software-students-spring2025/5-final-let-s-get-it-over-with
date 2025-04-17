@@ -1,0 +1,6 @@
+#REQUIREMENTS SPECIFIC TO ML-CLIENT
+Flask
+openai
+pymongo
+python-dotenv
+Pillow
