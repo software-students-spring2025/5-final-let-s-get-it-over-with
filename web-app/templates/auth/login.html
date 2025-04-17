@@ -1,74 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            padding-top: 50px;
-        }
-        .auth-container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .auth-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .alert {
-            margin-bottom: 15px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gamer One - Sign In</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"/>
+  <style>
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/static/fonts/Inter-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/static/fonts/Inter-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background-color: #000;
+      color: #fff;
+    }
+
+    .container-fluid {
+      display: flex;
+      height: 100vh;
+    }
+
+    .left-panel {
+      flex: 1;
+      background: url('https://golightstream.com/wp-content/uploads/2022/08/Live-Streaming-Setup-The-Only-Guide-Beginners-Will-Ever-Need-featured-image.jpg') no-repeat center center;
+      background-size: cover;
+      position: relative;
+    }
+
+    .right-panel {
+      flex: 1;
+      background-color: #9147ff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      position: relative;
+    }
+
+    .logo {
+        width: 60%;
+        max-width: 300px;
+        min-width: 230px;
+        margin-bottom: 50px
+    }
+
+    form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .form-control {
+      background-color: #1a1a1a;
+      border: none;
+      border-radius: 0;
+      color: #fff;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .form-control::placeholder {
+      color: #aaa;
+    }
+
+    .btn-signin {
+      background-color: #000;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .text-small {
+      font-size: 12px;
+      color: #d3b5ff;
+      margin-top: 15px;
+    }
+
+    .text-small a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="auth-container">
-            <div class="auth-header">
-                <h2>Login</h2>
-            </div>
-            
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category if category != 'error' else 'danger' }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            
-            <form method="POST" action="{{ url_for('auth.login') }}">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
-                </div>
-                
-                <div class="text-center">
-                    <p>Don't have an account? <a href="{{ url_for('auth.signup') }}">Sign up</a></p>
-                </div>
-            </form>
-        </div>
+  <div class="container-fluid">
+    <!-- Left Game Panel -->
+    <div class="left-panel">
     </div>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Right Login Panel -->
+    <div class="right-panel">
+      <img class="logo" src="{{ url_for('static', filename='logos/logo.png') }}" alt="Fake it Til you make it logo">
+
+      <form method="POST" action="{{ url_for('auth.login') }}">
+        <input type="text" name="username" class="form-control" placeholder="Username / Email address" required>
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
+        <button type="submit" class="btn btn-signin">SIGN IN</button>
+      </form>
+
+      <div class="text-small text-center">
+        Don’t have an account? <a href="{{ url_for('auth.signup') }}">Sign up</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
