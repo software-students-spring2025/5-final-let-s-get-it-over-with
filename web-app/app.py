@@ -46,6 +46,29 @@ def home():
         return response
     return redirect(url_for('auth.login'))
 
+@app.route('/chat')
+def chat():
+    # Check if user is logged in
+    if 'username' in session:
+        # Additional check to verify if the session is still valid
+        from auth import users_collection
+        user_exists = users_collection.find_one({"username": session['username']})
+        if not user_exists:
+            # If user doesn't exist in database, clear session
+            session.clear()
+            flash('Your session has expired. Please log in again.', 'error')
+            return redirect(url_for('auth.login'))
+
+        response = make_response(render_template('chat.html', username=session['username']))
+        # Set cache control headers
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+        return response
+
+    return redirect(url_for('auth.login'))
+
+
 @app.route("/generate-comment", methods=["POST"])
 def proxy_generate_comment():
     print("Transfering control to the ml-client ...")
