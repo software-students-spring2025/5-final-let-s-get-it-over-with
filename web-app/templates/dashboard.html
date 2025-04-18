@@ -94,6 +94,7 @@
     </div>
 
     <script>
+        let chatWindow = null;
         const video = document.getElementById("video");
         const toggleBtn = document.getElementById("toggle-btn");
 
@@ -147,6 +148,11 @@
         function startDetection() {
             isDetecting = true;
             toggleBtn.textContent = "Stop Live Stream";
+
+            if (!chatWindow || chatWindow.closed) {
+                chatWindow = window.open("/chat", "_blank", "width=400,height=600");
+            }
+
             sendFrame();
         }
 
@@ -166,6 +172,9 @@
         });
 
         function showComment(comment) {
+            if (chatWindow && !chatWindow.closed) {
+                chatWindow.postMessage({ comment }, "*");
+            }
             const chat = document.getElementById("chat-box");
             const messages = document.getElementById("messages");
 
