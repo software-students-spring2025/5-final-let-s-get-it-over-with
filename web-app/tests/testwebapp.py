@@ -94,3 +94,29 @@ def test_chat_session_expired(monkeypatch, client):
     # Session should be cleared
     with client.session_transaction() as sess:
         assert 'username' not in sess
+
+
+class DummyResponse:
+    def __init__(self, json_data, status_code):
+        self._json = json_data
+        self.status_code = status_code
+    def json(self):
+        return self._json
+
+
+def test_proxy_success(monkeypatch, client):
+    dummy = DummyResponse({'msg': 'ok'}, 200)
+    monkeypatch.setattr(requests, 'post', lambda url, json: dummy)
+    payload = {'text': 'hello'}
+    resp = client.post('/generate-comment', data=json.dumps(payload), content_type='application/json')
+    assert resp.status_code == 200
+    assert resp.get_json() == {'msg': 'ok'}
+
+
+def test_proxy_failure(monkeypatch, client):
+    def bad_post(url, json):
+        raise Exception('fail')
+    monkeypatch.setattr(requests, 'post', bad_post)
+    resp = client.post('/generate-comment', data=json.dumps({}), content_type='application/json')
+    assert resp.status_code == 500
+    assert resp.get_json() == {'error': 'ML service unreachable'}
