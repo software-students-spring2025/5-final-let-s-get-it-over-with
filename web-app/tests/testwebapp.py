@@ -65,3 +65,32 @@ def test_home_session_expired(monkeypatch, client):
     with client.session_transaction() as sess:
         assert 'username' not in sess
 
+def test_chat_redirects_when_not_logged_in(client):
+    resp = client.get('/chat')
+    assert resp.status_code == 302
+    assert '/login' in resp.headers['Location']
+
+
+def test_chat_with_valid_session(monkeypatch, client):
+    # Mock user exists in database
+    monkeypatch.setattr(auth.users_collection, 'find_one', lambda q: {'username': q['username']})
+    monkeypatch.setattr(app, 'render_template', lambda template, **ctx: f"RENDERED[{template}]")
+    with client.session_transaction() as sess:
+        sess['username'] = 'testuser'
+    resp = client.get('/chat')
+    assert resp.status_code == 200
+    assert b'chat' in resp.data
+    assert resp.headers['Cache-Control'].startswith('no-store')
+
+
+def test_chat_session_expired(monkeypatch, client):
+    # Mock user does not exist in database
+    monkeypatch.setattr(auth.users_collection, 'find_one', lambda q: None)
+    with client.session_transaction() as sess:
+        sess['username'] = 'testuser'
+    resp = client.get('/chat', follow_redirects=False)
+    assert resp.status_code == 302
+    assert '/login' in resp.headers['Location']
+    # Session should be cleared
+    with client.session_transaction() as sess:
+        assert 'username' not in sess
