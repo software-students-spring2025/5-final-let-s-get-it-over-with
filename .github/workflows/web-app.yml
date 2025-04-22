@@ -26,7 +26,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-          docker build -t ml-client-test ./web-app
+          docker build -t web-app ./web-app
 
     - name: Run web-app tests
       working-directory: web-app
