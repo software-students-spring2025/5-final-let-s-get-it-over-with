@@ -46,6 +46,7 @@ def home():
         return response
     return redirect(url_for('auth.login'))
 
+
 @app.route('/chat')
 def chat():
     # Check if user is logged in
@@ -80,12 +81,12 @@ def proxy_generate_comment():
         ml_url = "http://ml-client:8000/generate-comment"  # Internal Docker service name
         data = request.get_json() or {}
         res = requests.post(ml_url, json=request.get_json())
-        # print("DEBUG: data recieved", data)
         return res.json(), res.status_code
 
     except Exception as e:
         print("Error contacting ml-client:", e)
         return {"error": "ML service unreachable"}, 500   
+
 
 @app.route("/process-question", methods=["POST"])
 def proxy_process_question():
@@ -101,8 +102,6 @@ def proxy_process_question():
     except Exception as e:
         print("Error contacting ml-client for speech processing:", e)
         return {"error": "ML speech service unreachable"}, 500
-
-
 
 
 if __name__ == '__main__': 

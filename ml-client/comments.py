@@ -40,12 +40,6 @@ user_pool = [
     "EmoteLord", "WaffleWizard", "CritKitty", "BoomHeadshot", "TTV_Jay",
     "SaltySocks", "PotionPete", "ChillCaster", "MemeMachine", "XPHunter"
 ]
-
-# # Random colors and Twitch-like badge emojis
-# user_styles = {user: {
-#     "color": f"hsl({randint(0, 360)}, 70%, 60%)",  # vibrant color
-#     "badge": choice(["🟪", "🔰", "⭐", "👑", "📛", "💬", "🎮"])
-# } for user in user_pool}
     
 @app.route("/generate-comment", methods=["POST"])
 def generate_comment():
@@ -64,8 +58,6 @@ def generate_comment():
         return jsonify({"error": "Invalid base64 image"}), 400
 
     # convert bytes to pixels and process the image (e.g., analyze facial expression) 
-    #image isnt being used?
-    # image = Image.open(BytesIO(image_bytes))
     try:
         # Convert to OpenCV format
         np_arr = np.frombuffer(image_bytes, np.uint8)
@@ -96,7 +88,7 @@ def generate_comment():
             avg_corner_y = (left_mouth.y + right_mouth.y) / 2
             frown_check = mouth_center.y < avg_corner_y  # center pulled up = sad/frown
 
-            # NEEDS finetunning: Sangry face detector based on eyebrow height difference and distance between two brows
+            # NEEDS finetunning: angry face detector based on eyebrow height difference and distance between two brows
             left_eyebrow = landmarks[70]
             left_eye = landmarks[159]
             right_eyebrow = landmarks[300]
@@ -143,23 +135,22 @@ def generate_comment():
 
     print("Detected expression:", expression)
     # Simulate what the bot would "see" and say
-<<<<<<< HEAD
     reaction_prompt = f"Write a short, fun, Twitch-style comment reacting to a webcam stream where the streamer looks like they're {expression}. Spam emojis and Twitch lingo. Keep it casual."
-    
-    random_prompt = random.choice([
-        "Write a funny Twitch chat message with gamer lingo.",
-        "Say something hype or supportive in Twitch style.",
-        "Drop a playful comment you'd see in a Twitch livestream chat.",
-        "React to the gameplay or stream vibe in a short Twitch message.",
-        "Tease the  Twitch streamer like you're a regular viewer."
-    ])
+    video_prompt = "Write a comment reacting to a stream."
+
+    # random_prompt = random.choice([
+    #     "Write a funny Twitch chat message with gamer lingo.",
+    #     "Say something hype or supportive in Twitch style.",
+    #     "Drop a playful comment you'd see in a Twitch livestream chat.",
+    #     "React to the gameplay or stream vibe in a short Twitch message.",
+    #     "Tease the  Twitch streamer like you're a regular viewer."
+    # ])
+
+    # Randomly decide prompt type (60% video-based, 40% reaction to facial expressions)
+    prompt = video_prompt if random.random() < 0.6 else reaction_prompt
 
     # Randomly decide prompt type (70% reaction-based, 30% random)
-    prompt = reaction_prompt if random.random() < 0.7 else random_prompt
-=======
-    prompt = "Write a comment reacting to a stream."
- 
->>>>>>> e803f98f653a40d27ab3e958de7ef31415728f13
+    # prompt = reaction_prompt if random.random() < 0.7 else random_prompt
 
     try:
         # send request to OpenAI to generate twitch style comment
@@ -167,11 +158,11 @@ def generate_comment():
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are one of thousands of active viewers of the popular live streamer PrestonGames and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps"},
-                {"role": "user",
-                  "content": [
-                        {"type": "text", "text": "React to this frame from the stream."},
-                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{encoded}"}}
-                    ]}
+                 {"role": "user",
+                   "content": [
+                         {"type": "text", "text": "React to this frame from the stream."},
+                         {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{encoded}"}}
+                     ]}
             ],
             temperature=0.8,            # makes the response more random and fun
             presence_penalty=0.3,       # encourages more variety
