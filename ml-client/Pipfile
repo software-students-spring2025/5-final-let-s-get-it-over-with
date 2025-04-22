@@ -9,6 +9,9 @@ openai = "*"
 pymongo = "*"
 python-dotenv = "*"
 pillow = "*"
+pylint = "*"
+black = "*"
+
 
 [dev-packages]
 
