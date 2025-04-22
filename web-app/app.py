@@ -1,13 +1,13 @@
-from flask import Flask, render_template, redirect, url_for, session, flash, request, make_response
+from flask import Flask, render_template, redirect, url_for, session, flash, request, make_response, jsonify
 from dotenv import load_dotenv
 import os
 import requests
-
 # Import auth blueprint
 from auth.routes import auth_bp
 
 # Load environment variables
-load_dotenv()
+load_dotenv() 
+
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "default_secret_key")
@@ -58,7 +58,9 @@ def chat():
             session.clear()
             flash('Your session has expired. Please log in again.', 'error')
             return redirect(url_for('auth.login'))
+        
 
+        #ERROR 
         response = make_response(render_template('chat.html', username=session['username']))
         # Set cache control headers
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
@@ -83,7 +85,23 @@ def proxy_generate_comment():
 
     except Exception as e:
         print("Error contacting ml-client:", e)
-        return {"error": "ML service unreachable"}, 500
+        return {"error": "ML service unreachable"}, 500   
+
+@app.route("/process-question", methods=["POST"])
+def proxy_process_question():
+    print("Transferring control to ml-client process-question for speech recognition")
+    
+    try:
+        print("DEBUG: sending info for speech")
+        ml_url_speech = "http://ml-client:8000/process-question"
+        data = request.get_json() or {}
+        res = requests.post(ml_url_speech, json=data)
+        return res.json(), res.status_code
+    
+    except Exception as e:
+        print("Error contacting ml-client for speech processing:", e)
+        return {"error": "ML speech service unreachable"}, 500
+
 
 
 

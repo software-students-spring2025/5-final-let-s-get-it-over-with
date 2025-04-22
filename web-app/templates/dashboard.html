@@ -39,7 +39,24 @@
 
         .alert {
             margin-bottom: 15px;
+        }  
+
+       
+
+        .user-voice .message-username {
+            color: #FF4500 !important;
         }
+
+        .voice-response .message-username {
+            color: #1E90FF !important;
+        }
+
+        .user-voice, .voice-response {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-left: 3px solid #9147ff;
+        }
+
+
     </style>
 </head>
 
@@ -93,135 +110,13 @@
         </div>
     </div>
 
-    <script>
-        let chatWindow = null;
-        const video = document.getElementById("video");
-        const toggleBtn = document.getElementById("toggle-btn");
-
-        // Capture frames from the video 
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        let isDetecting = false;
-        let detectionTimeout = null;
-        let mediaStream = null;
-
-        // Ask permission to use the webcam
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                mediaStream = stream;
-                video.srcObject = stream;
-
-                video.onloadeddata = () => {
-                    // Automatically start detection when video is ready
-                    startDetection();
-                }
-            });
-
-        function sendFrame() {
-            if (!isDetecting) return;
-
-            console.log("Sending Frames ... ")
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-
-            // Copy the current webcam frame onto the canvas aka screenshot
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            // Convert the canvas image into a base64-encoded jpeg
-            const dataURL = canvas.toDataURL("image/jpeg");
-
-            // Send the image to the ML-client via JSON string
-            fetch("/generate-comment", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ image: dataURL })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    showComment(data.comment);
-                });
-
-            detectionTimeout = setTimeout(sendFrame, 5000); // send a snapshot 5 seconds
-        }
-
-        function startDetection() {
-            isDetecting = true;
-            toggleBtn.textContent = "Stop Live Stream";
-
-            if (!chatWindow || chatWindow.closed) {
-                chatWindow = window.open("/chat", "_blank", "width=400,height=600");
-            }
-
-            sendFrame();
-        }
-
-        function stopDetection() {
-            isDetecting = false;
-            toggleBtn.textContent = "Start Live Streaming";
-            clearTimeout(detectionTimeout);
-        }
-
-        // Toggle button handler for live streaming
-        toggleBtn.addEventListener("click", () => {
-            if (isDetecting) {
-                stopDetection();
-            } else {
-                startDetection();
-            }
-        });
-
-        function showComment(comment) {
-            if (chatWindow && !chatWindow.closed) {
-                chatWindow.postMessage({ comment }, "*");
-            }
-            const chat = document.getElementById("chat-box");
-            const messages = document.getElementById("messages");
-
-            // Create wrapper
-            const wrapper = document.createElement("div");
-            wrapper.className = "message-wrapper";
-
-            // Create inline message content container
-            const content = document.createElement("div");
-            content.className = "message-content";
-
-            // Add random badges
-            const badgeList = ["mod.png", "prime.png", "turbo.png"];
-            const shuffledBadges = badgeList.sort(() => 0.5 - Math.random());
-            const badgeCount = Math.floor(Math.random() * (badgeList.length + 1));
-            const selectedBadges = shuffledBadges.slice(0, badgeCount);
-
-            selectedBadges.forEach(badge => {
-                const img = document.createElement("img");
-                img.src = `/static/badges/${badge}`;
-                img.alt = badge.split(".")[0];
-                img.style.height = "18px";
-                img.style.verticalAlign = "middle";
-                img.style.marginRight = "2px";
-                content.appendChild(img);
-            });
-
-            // Random color for username
-            const usernameColors = [
-                "#FF0000", "#0000FF", "#008000", "#B22222", "#FF7F50", "#9ACD32", "#FF4500",
-                "#2E8B57", "#DAA520", "#D2691E", "#5F9EA0", "#1E90FF", "#FF69B4", "#8A2BE2", "#00FF7F"
-            ];
-            const usernameColor = usernameColors[Math.floor(Math.random() * usernameColors.length)];
-
-            // Append full message line
-            const message = document.createElement("span");
-            message.className = "message";
-            message.innerHTML = `<span class="message-username" style="color:${usernameColor}">chatuser</span>: ${comment}`;
-
-            content.appendChild(message);
-            wrapper.appendChild(content);
-            messages.appendChild(wrapper);
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-
-    </script>
+    <!-- At the end of the body, add scripts in this order -->
+    <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/debug-tools.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chat-display.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/speech-recognition.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/webcam-handler.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 

@@ -24,17 +24,19 @@
     background-color: #18181B;
     color: #EFEFF1;
     font-family: 'Inter', sans-serif;
-    font-size: 13px;
-position: relative;
+    font-size: 13px; 
+    position: relative;
     overflow-y: auto;
-    padding: 8px 0;
+    padding: 8px 0; 
+    display: flex;  
+    flex-direction: column; 
+
 }
 
 .messages {
     display: flex;
     flex-direction: column;
-    position: absolute;
-    bottom: 0;
+    margin-top: auto
 }
 
 .message-wrapper {
