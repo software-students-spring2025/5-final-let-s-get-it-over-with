@@ -4,3 +4,5 @@ openai
 pymongo
 python-dotenv
 Pillow
+opencv-python
+mediapipe

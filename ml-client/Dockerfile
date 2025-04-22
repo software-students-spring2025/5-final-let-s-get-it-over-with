@@ -2,6 +2,9 @@ FROM python:3.11-slim
 
 WORKDIR /ml-client
 
+# Helps load the cv2 library
+RUN apt-get update && apt-get install -y libgl1 libglib2.0-0
+
 # Copy requirements first for better layer caching
 COPY requirements.txt .
 RUN pip install --upgrade pip && \

@@ -24,7 +24,7 @@ function sendFrame() {
     })
         .then(res => res.json())
         .then(data => {
-            showComment(data.comment);
+            showComment(data);
         });
 
     detectionTimeout = setTimeout(sendFrame, 5000); // send a snapshot every 5 seconds
