@@ -50,17 +50,21 @@ def generate_comment():
     image = Image.open(BytesIO(image_bytes))
 
     # Simulate what the bot would "see" and say
-    prompt = "Write a short, fun, Twitch-style comment reacting to a webcam stream. Spam emojis and Twitch lingo. Keep it casual."
+    prompt = "Write a comment reacting to a stream."
  
 
     #ERROR: 
     try:
         # send request to OpenAI to generate twitch style comment
         response = openai_client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You're a viewer of a Twitch livestream."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": "You are one of thousands of active viewers of the popular live streamer PrestonGames and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps"},
+                {"role": "user",
+                  "content": [
+                        {"type": "text", "text": "React to this frame from the stream."},
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{encoded}"}}
+                    ]}
             ],
             temperature=0.8, # makes the response more random and fun
             max_tokens=20   # limits response length 
