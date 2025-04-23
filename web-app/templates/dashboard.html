@@ -41,8 +41,6 @@
             margin-bottom: 15px;
         }  
 
-       
-
         .user-voice .message-username {
             color: #FF4500 !important;
         }
@@ -56,6 +54,22 @@
             border-left: 3px solid #9147ff;
         }
 
+        .viewer-box {
+            background-color: #1f1f23;
+            color: #f26c6d;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin: 10px 0;
+            }
+
+        .viewer-icon {
+            margin-right: 5px;
+            font-size: 16px;
+        }
 
     </style>
 </head>
@@ -106,10 +120,23 @@
                         <button id="toggle-btn">Start Live Streaming</button>
                     </div>
                 </div>
+                <div id="viewer-count" class="viewer-box">
+                    <span class="viewer-icon">👤</span>
+                    <span id="viewer-number">0</span>
+                </div>
             </section>
         </div>
     </div>
-
+    <script>
+        function updateViewerCount() {
+            const viewerCount = document.getElementById("viewer-number");
+            const count = Math.floor(Math.random() * 9901) + 100; // upto 10K
+            viewerCount.textContent = count.toLocaleString();
+        }
+      
+        setInterval(updateViewerCount, 10000); // update every 10s
+        updateViewerCount(); // initial value
+    </script>
     <!-- At the end of the body, add scripts in this order -->
     <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
     <script src="{{ url_for('static', filename='js/debug-tools.js') }}"></script>

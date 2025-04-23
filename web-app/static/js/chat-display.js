@@ -8,16 +8,16 @@ function showBotResponse(comment) {
 }
 
 // Display webcam-generated comment
-function showComment(comment) {
+function showComment(data) {
   if (chatWindow && !chatWindow.closed) {
-      chatWindow.postMessage({ comment }, "*");
+      chatWindow.postMessage({ comment: data.comment }, "*");
   }
   
-  displayMessage(comment);
+  displayMessage(data);
 }
 
 // Common function to display messages in chat
-function displayMessage(comment) {
+function displayMessage(data) {
   const chat = document.getElementById("chat-box");
   const messages = document.getElementById("messages");
 
@@ -55,7 +55,7 @@ function displayMessage(comment) {
   // Append full message line
   const message = document.createElement("span");
   message.className = "message";
-  message.innerHTML = `<span class="message-username" style="color:${usernameColor}">chatuser</span>: ${comment}`;
+  message.innerHTML = `<span class="message-username" style="color:${usernameColor}"><strong>${data.username}</strong></span>: ${data.comment}`;
 
   content.appendChild(message);
   wrapper.appendChild(content);
