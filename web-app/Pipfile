@@ -21,7 +21,6 @@ requests = "==2.31.0"
 pytest = "*"
 pylint = "*"
 black = "*"
-mongomock = "*"
 
 
 [dev-packages]
