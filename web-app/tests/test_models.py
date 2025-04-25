@@ -1,4 +1,3 @@
-import pytest
 import bcrypt
 from unittest.mock import patch, MagicMock
 from bson.objectid import ObjectId
