@@ -30,8 +30,8 @@ db = client["chatbots"]
 collection = db["messages"]
 
 # Load OpenAI API key  
-openai_api_key = os.getenv("OPENAI_API_KEY")
-openai_client = OpenAI(api_key = openai_api_key)
+def get_openai_client():
+    return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Fake usernames pool
 user_pool = [
@@ -154,7 +154,7 @@ def generate_comment():
 
     try:
         # send request to OpenAI to generate twitch style comment
-        response = openai_client.chat.completions.create(
+        response = get_openai_client().chat.completions.create(
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are one of thousands of active viewers of the popular live streamer PrestonGames and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps"},
@@ -212,7 +212,7 @@ def process_question():
         
         # Generate response_count responses using different personas
         for i in range(response_count):
-            response = openai_client.chat.completions.create(
+            response = get_openai_client().chat.completions.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": personas[i % len(personas)] + "IMPORTANT: Always sound like a real, chill human who genuinely loves watching Twitch. Never mention you're AI—just be a casual gamer/viewer with personal takes, keep it under 2 sentences, and feel free to drop emojis"},
