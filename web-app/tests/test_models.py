@@ -1,73 +1,75 @@
 import pytest
 import bcrypt
-import mongomock
+from unittest.mock import patch, MagicMock
+from bson.objectid import ObjectId
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from bson.objectid import ObjectId
-from unittest.mock import patch
-import auth
-import auth.models as models
+from auth.models import User
 
 
+def test_verify_password_correct():
+    password = "testpass"
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    assert User.verify_password(hashed, password) is True
 
-# Mocked MongoDB collection
-mock_db = mongomock.MongoClient().db
-auth.users_collection = mock_db.users
 
-class TestUser:
+def test_verify_password_incorrect():
+    password = "testpass"
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    assert User.verify_password(hashed, "wrongpass") is False
 
-    def test_create_user(self):
-        username = "testuser"
-        email = "test@example.com"
-        password = "securepassword"
 
-        user_id = models.User.create_user(username, email, password)
-        user = auth.users_collection.find_one({"_id": ObjectId(user_id)})
+@patch("auth.models.users_collection")
+def test_create_user(mock_users_collection):
+    username = "testuser"
+    email = "testuser@example.com"
+    password = "testpasasword"
 
-        assert user is not None
-        assert user["username"] == username
-        assert user["email"] == email
-        assert bcrypt.checkpw(password.encode(), user["password"])
+    mock_insert_result = MagicMock()
+    mock_insert_result.inserted_id = "mock_id"
+    mock_users_collection.insert_one.return_value = mock_insert_result
 
-    def test_get_by_username(self):
-        username = "john_doe"
-        auth.users_collection.insert_one({
-            "username": username,
-            "email": "john@example.com",
-            "password": bcrypt.hashpw("pass123".encode(), bcrypt.gensalt())
-        })
+    user_id = User.create_user(username, email, password)
 
-        user = models.User.get_by_username(username)
-        assert user is not None
-        assert user["username"] == username
+    args, _ = mock_users_collection.insert_one.call_args
+    inserted_data = args[0]
 
-    def test_get_by_email(self):
-        email = "jane@example.com"
-        auth.users_collection.insert_one({
-            "username": "jane_doe",
-            "email": email,
-            "password": bcrypt.hashpw("pass456".encode(), bcrypt.gensalt())
-        })
+    assert inserted_data["username"] == username
+    assert inserted_data["email"] == email
+    assert bcrypt.checkpw(password.encode(), inserted_data["password"])
+    assert user_id == "mock_id"
 
-        user = models.User.get_by_email(email)
-        assert user is not None
-        assert user["email"] == email
 
-    def test_get_by_id(self):
-        inserted_user = auth.users_collection.insert_one({
-            "username": "unique_user",
-            "email": "unique@example.com",
-            "password": bcrypt.hashpw("unique123".encode(), bcrypt.gensalt())
-        })
+@patch("auth.models.users_collection")
+def test_get_by_username(mock_users_collection):
+    mock_user = {"username": "tester", "email": "tester@example.com"}
+    mock_users_collection.find_one.return_value = mock_user
 
-        user = models.User.get_by_id(str(inserted_user.inserted_id))
-        assert user is not None
-        assert user["_id"] == inserted_user.inserted_id
+    user = User.get_by_username("tester")
 
-    def test_verify_password(self):
-        password = "mysecret"
-        hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    mock_users_collection.find_one.assert_called_once_with({"username": "tester"})
+    assert user == mock_user
 
-        assert models.User.verify_password(hashed, password)
-        assert not models.User.verify_password(hashed, "wrongpassword")
+
+@patch("auth.models.users_collection")
+def test_get_by_email(mock_users_collection):
+    mock_user = {"username": "testuser2", "email": "testuser2@example.com"}
+    mock_users_collection.find_one.return_value = mock_user
+
+    user = User.get_by_email("testuser2@example.com")
+
+    mock_users_collection.find_one.assert_called_once_with({"email": "testuser2@example.com"})
+    assert user == mock_user
+
+
+@patch("auth.models.users_collection")
+def test_get_by_id(mock_users_collection):
+    fake_id = ObjectId()
+    mock_user = {"_id": fake_id, "username": "user_id", "email": "id@example.com"}
+    mock_users_collection.find_one.return_value = mock_user
+
+    user = User.get_by_id(str(fake_id))
+
+    mock_users_collection.find_one.assert_called_once_with({"_id": fake_id})
+    assert user == mock_user
