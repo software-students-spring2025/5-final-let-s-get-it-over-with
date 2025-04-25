@@ -6,14 +6,15 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from bson.objectid import ObjectId
 from unittest.mock import patch
-from auth.models import User
+import auth
+import auth.models as models
+
+
 
 # Mocked MongoDB collection
 mock_db = mongomock.MongoClient().db
-mock_users_collection = mock_db.users
+auth.users_collection = mock_db.users
 
-# Patching users_collection in the User module
-@patch("auth.users_collection", new=mock_users_collection)
 class TestUser:
 
     def test_create_user(self):
@@ -21,8 +22,8 @@ class TestUser:
         email = "test@example.com"
         password = "securepassword"
 
-        user_id = User.create_user(username, email, password)
-        user = mock_users_collection.find_one({"_id": ObjectId(user_id)})
+        user_id = models.User.create_user(username, email, password)
+        user = auth.users_collection.find_one({"_id": ObjectId(user_id)})
 
         assert user is not None
         assert user["username"] == username
@@ -31,36 +32,36 @@ class TestUser:
 
     def test_get_by_username(self):
         username = "john_doe"
-        mock_users_collection.insert_one({
+        auth.users_collection.insert_one({
             "username": username,
             "email": "john@example.com",
             "password": bcrypt.hashpw("pass123".encode(), bcrypt.gensalt())
         })
 
-        user = User.get_by_username(username)
+        user = models.User.get_by_username(username)
         assert user is not None
         assert user["username"] == username
 
     def test_get_by_email(self):
         email = "jane@example.com"
-        mock_users_collection.insert_one({
+        auth.users_collection.insert_one({
             "username": "jane_doe",
             "email": email,
             "password": bcrypt.hashpw("pass456".encode(), bcrypt.gensalt())
         })
 
-        user = User.get_by_email(email)
+        user = models.User.get_by_email(email)
         assert user is not None
         assert user["email"] == email
 
     def test_get_by_id(self):
-        inserted_user = mock_users_collection.insert_one({
+        inserted_user = auth.users_collection.insert_one({
             "username": "unique_user",
             "email": "unique@example.com",
             "password": bcrypt.hashpw("unique123".encode(), bcrypt.gensalt())
         })
 
-        user = User.get_by_id(str(inserted_user.inserted_id))
+        user = models.User.get_by_id(str(inserted_user.inserted_id))
         assert user is not None
         assert user["_id"] == inserted_user.inserted_id
 
@@ -68,5 +69,5 @@ class TestUser:
         password = "mysecret"
         hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
-        assert User.verify_password(hashed, password)
-        assert not User.verify_password(hashed, "wrongpassword")
+        assert models.User.verify_password(hashed, password)
+        assert not models.User.verify_password(hashed, "wrongpassword")
