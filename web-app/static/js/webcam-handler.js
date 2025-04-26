@@ -30,6 +30,8 @@ function sendFrame() {
     detectionTimeout = setTimeout(sendFrame, 5000); // send a snapshot every 5 seconds
 }
 
+let chatActivityInterval;
+
 // Start webcam capture and processing
 function startDetection() {
     isDetecting = true;
@@ -49,6 +51,22 @@ function startDetection() {
     }
 
     sendFrame();
+
+    chatActivityInterval = setInterval(() => {
+        const [min, max] = viewerSlider.noUiSlider.get().map(v => parseInt(v));
+        const viewerCount = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        let commentdDelay;
+        if (viewerCount > 8000) commentdelay = 6000;
+        else if (viewerCount > 5000) commentdelay = 8000;
+        else if (viewerCount > 2000) commentdelay = 10000;
+        else commentDelay = 15000;
+
+        clearInterval(chatActivityInterval); // Reset previous interval
+        chatActivityInterval = setInterval(() => {
+            sendFrame();
+        }, commentdDelay);
+    }, 10000) // Re-evaluate frequency every 10s
 }
 
 // Stop webcam capture and processing
@@ -62,4 +80,6 @@ function stopDetection() {
         recognition.stop();  
         updateSpeechDebugger('status', 'Stopped');
     }
+
+    clearInterval(chatActivityInterval);
 }

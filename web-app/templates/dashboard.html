@@ -9,6 +9,7 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='chat-style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
     <style>
         * {
             padding: 0;
@@ -112,7 +113,32 @@
                 </div>
             </div>
             <section>
-                <h2>Fake It Till You Make It - Live Feed</h2>
+                <div class="mb-3">
+                    <label for="stream-title" class="form-label"><strong>Stream Title:</strong></label>
+                    <input type="text" id="stream-title" class="form-control" placeholder="Enter your stream title">
+                </div>
+
+                <h2 id="displayed-title">Fake It Till You Make It - Live Feed</h2>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Genre:</strong></label><br>
+                    <div class="btn-group" role="group" aria-label="Stream Genres">
+                        <input type="checkbox" class="btn-check" id="genre-irl" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="genre-irl">IRL</label>
+                
+                        <input type="checkbox" class="btn-check" id="genre-gaming" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="genre-gaming">Gaming</label>
+                
+                        <input type="checkbox" class="btn-check" id="genre-education" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="genre-education">Education</label>
+                
+                        <input type="checkbox" class="btn-check" id="genre-talkshow" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="genre-talkshow">Talk Show</label>
+
+                        <input type="checkbox" class="btn-check" id="genre-speedrunning" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="genre-speedrunning">Speed Running</label>
+                    </div>
+                </div>
 
                 <div class="video-container">
                     <video id="video" width="400" autoplay></video>
@@ -124,10 +150,12 @@
                     <span class="viewer-icon">👤</span>
                     <span id="viewer-number">0</span>
                 </div>
+                <div id="viewer-range" style="margin: 20px 0;"></div>
+                <p>Viewer Range: <span id="range-display">100 – 10,000</span></p>
             </section>
         </div>
     </div>
-    <script>
+    <!-- <script>
         function updateViewerCount() {
             const viewerCount = document.getElementById("viewer-number");
             const count = Math.floor(Math.random() * 9901) + 100; // upto 10K
@@ -136,6 +164,53 @@
       
         setInterval(updateViewerCount, 10000); // update every 10s
         updateViewerCount(); // initial value
+    </script> -->
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+    <script>
+        const viewerSlider = document.getElementById('viewer-range');
+        const display = document.getElementById('range-display');
+        const viewerCount = document.getElementById('viewer-number');
+      
+        noUiSlider.create(viewerSlider, {
+          start: [100, 10000],
+          connect: true,
+          range: {
+            'min': 100,
+            'max': 10000
+          },
+          step: 100,
+          tooltips: true,
+          format: {
+            to: value => Math.round(value),
+            from: value => Number(value)
+          }
+        });
+      
+        // Update the viewer range   
+        viewerSlider.noUiSlider.on('update', function (values) {
+          const min = Math.round(values[0]);
+          const max = Math.round(values[1]);
+          display.textContent = `${min.toLocaleString()} – ${max.toLocaleString()}`;
+        });
+
+        // update the viewer count  
+        function updateViewerCount() {
+            const [min, max] = viewerSlider.noUiSlider.get().map(Number); 
+            const count = Math.floor(Math.random() * (max - min + 1)) + min; 
+            viewerCount.textContent = count.toLocaleString();
+        }
+      
+        setInterval(updateViewerCount, 10000); // update every 10s
+        updateViewerCount(); // initial value
+    </script>
+    <script>
+        const titleInput = document.getElementById("stream-title");
+        const displayedTitle = document.getElementById("displayed-title");
+      
+        titleInput.addEventListener("input", () => {
+          const title = titleInput.value.trim();
+          displayedTitle.textContent = title || "Fake It Till You Make It - Live Feed";
+        });
     </script>
     <!-- At the end of the body, add scripts in this order -->
     <script src="{{ url_for('static', filename='js/shared.js') }}"></script>

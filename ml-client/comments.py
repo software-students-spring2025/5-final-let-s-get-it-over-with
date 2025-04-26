@@ -47,6 +47,7 @@ def generate_comment():
     print("DEBUG: Connection Successful") 
     # Extract image field from JSON data set in a request
     data = request.json.get("image")
+    session_username = request.json.get("username")
     if not data:
         return jsonify({"error": "No image data received"}), 400
 
@@ -157,7 +158,7 @@ def generate_comment():
         response = openai_client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are one of thousands of active viewers of the popular live streamer PrestonGames and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps"},
+                {"role": "system", "content": f'You are one of thousands of active viewers of the popular live streamer "{session_username}" and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps'},
                  {"role": "user",
                    "content": [
                          {"type": "text", "text": "React to this frame from the stream."},
