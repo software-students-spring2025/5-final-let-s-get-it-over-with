@@ -56,7 +56,10 @@
 <body>
     <div class="container">
         <div class="dashboard-container">
-            <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
+            <div class="dashboard-header">
+                <h2>Dashboard</h2>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
+            </div>
 
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -219,7 +222,7 @@
 
             // Update immediately, then every 10s
             updateViewerCount();
-            viewerCountInterval = setInterval(updateViewerCount, 10000);
+            viewerCountInterval = setInterval(updateViewerCount, 20000);
         }
     </script>
     <script src="{{ url_for('static', filename='js/shared.js') }}"></script>

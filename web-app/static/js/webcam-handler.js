@@ -32,7 +32,7 @@ function sendFrame() {
     detectionTimeout = setTimeout(sendFrame, 5000); // send a snapshot every 5 seconds
 }
 
-let chatActivityInterval;
+let chatActivityInterval = null;
 
 // Start webcam capture and processing
 function startDetection() {
