@@ -24,7 +24,9 @@ function sendFrame() {
     })
         .then(res => res.json())
         .then(data => {
-            showComment(data);
+            if (isDetecting){
+                showComment(data);
+            }
         });
 
     detectionTimeout = setTimeout(sendFrame, 5000); // send a snapshot every 5 seconds
@@ -56,16 +58,16 @@ function startDetection() {
         const [min, max] = viewerSlider.noUiSlider.get().map(v => parseInt(v));
         const viewerCount = Math.floor(Math.random() * (max - min + 1)) + min;
 
-        let commentdDelay;
-        if (viewerCount > 8000) commentdelay = 6000;
-        else if (viewerCount > 5000) commentdelay = 8000;
-        else if (viewerCount > 2000) commentdelay = 10000;
+        let commentDelay;
+        if (viewerCount > 8000) commentDelay = 8000;
+        else if (viewerCount > 5000) commentDelay = 10000;
+        else if (viewerCount > 2000) commentDelay = 12000;
         else commentDelay = 15000;
 
         clearInterval(chatActivityInterval); // Reset previous interval
         chatActivityInterval = setInterval(() => {
             sendFrame();
-        }, commentdDelay);
+        }, commentDelay);
     }, 10000) // Re-evaluate frequency every 10s
 }
 
@@ -82,4 +84,7 @@ function stopDetection() {
     }
 
     clearInterval(chatActivityInterval);
+    document.getElementById('displayed-title').textContent = 'Fake It Till You Make It - Live Stream';
+    document.getElementById('genre-badge').textContent = '';
+    document.getElementById('viewer-number').textContent = '0';
 }

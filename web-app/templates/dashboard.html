@@ -1,8 +1,5 @@
-<!--This will be changed later, but is a sample dashboard layout after login is successful-->
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,34 +51,12 @@
             background-color: rgba(0, 0, 0, 0.05);
             border-left: 3px solid #9147ff;
         }
-
-        .viewer-box {
-            background-color: #1f1f23;
-            color: #f26c6d;
-            font-weight: bold;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 8px;
-            border-radius: 6px;
-            margin: 10px 0;
-            }
-
-        .viewer-icon {
-            margin-right: 5px;
-            font-size: 16px;
-        }
-
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="dashboard-container">
-            <div class="dashboard-header">
-                <h2>Dashboard</h2>
-                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
-            </div>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
 
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -105,114 +80,148 @@
                             access your data.</p>
                     </div>
                 </div>
-
                 <div class="chat" id="chat-box">
                     <div class="messages" id="messages">
-
                     </div>
                 </div>
             </div>
-            <section>
-                <div class="mb-3">
-                    <label for="stream-title" class="form-label"><strong>Stream Title:</strong></label>
-                    <input type="text" id="stream-title" class="form-control" placeholder="Enter your stream title">
+            <div class="video-container">
+                <video id="video" width="400" autoplay></video>
+                <div class="button-group">
+                    <button id="toggle-btn">Start Live Streaming</button>
                 </div>
-
-                <h2 id="displayed-title">Fake It Till You Make It - Live Feed</h2>
-
-                <div class="mb-3">
-                    <label class="form-label"><strong>Genre:</strong></label><br>
-                    <div class="btn-group" role="group" aria-label="Stream Genres">
-                        <input type="checkbox" class="btn-check" id="genre-irl" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="genre-irl">IRL</label>
-                
-                        <input type="checkbox" class="btn-check" id="genre-gaming" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="genre-gaming">Gaming</label>
-                
-                        <input type="checkbox" class="btn-check" id="genre-education" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="genre-education">Education</label>
-                
-                        <input type="checkbox" class="btn-check" id="genre-talkshow" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="genre-talkshow">Talk Show</label>
-
-                        <input type="checkbox" class="btn-check" id="genre-speedrunning" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="genre-speedrunning">Speed Running</label>
-                    </div>
+            </div>
+            <div class="text-center mt-4">
+                <h2 id="displayed-title">Fake It Till You Make It - Live Stream</h2>
+                <div id="genre-badge" class="badge bg-primary fs-5 mt-2"></div>
+                <div id="viewer-count" class="mt-3 fs-4">
+                    👥 <span id="viewer-number">0</span> viewers
                 </div>
-
-                <div class="video-container">
-                    <video id="video" width="400" autoplay></video>
-                    <div class="button-group">
-                        <button id="toggle-btn">Start Live Streaming</button>
-                    </div>
-                </div>
-                <div id="viewer-count" class="viewer-box">
-                    <span class="viewer-icon">👤</span>
-                    <span id="viewer-number">0</span>
-                </div>
-                <div id="viewer-range" style="margin: 20px 0;"></div>
-                <p>Viewer Range: <span id="range-display">100 – 10,000</span></p>
-            </section>
+            </div>
         </div>
     </div>
-    <!-- <script>
-        function updateViewerCount() {
-            const viewerCount = document.getElementById("viewer-number");
-            const count = Math.floor(Math.random() * 9901) + 100; // upto 10K
-            viewerCount.textContent = count.toLocaleString();
-        }
-      
-        setInterval(updateViewerCount, 10000); // update every 10s
-        updateViewerCount(); // initial value
-    </script> -->
+
+    <div class="modal fade" id="streamSetupModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form id="stream-setup-form">
+
+                <div class="modal-header">
+                  <h5 class="modal-title">Set Up Your Stream</h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                      <label for="stream-title" class="form-label"><strong>Stream Title</strong></label>
+                      <input type="text" id="stream-title" class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Stream Genres:</strong></label><br>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="genre" value="IRL" id="genreIRL">
+                            <label class="form-check-label" for="genreIRL">IRL</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="genre" value="Gaming" id="genreGaming">
+                            <label class="form-check-label" for="genreGaming">Gaming</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="genre" value="Education" id="genreEducation">
+                            <label class="form-check-label" for="genreEducation">Education</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="genre" value="Podcast" id="genrePodcast">
+                            <label class="form-check-label" for="genrePodcast">Talk Show/Podcast</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="genre" value="Health" id="genreHealth">
+                            <label class="form-check-label" for="genreHealth">Health & Fitness</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Viewer Range</strong></label>
+                        <div id="modal-viewer-range" style="margin: 20px 0;"></div>
+                        <p>Selected Range: <span id="modal-range-display">100 – 10,000</span></p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Start Stream</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+
     <script>
-        const viewerSlider = document.getElementById('viewer-range');
-        const display = document.getElementById('range-display');
-        const viewerCount = document.getElementById('viewer-number');
-      
-        noUiSlider.create(viewerSlider, {
-          start: [100, 10000],
-          connect: true,
-          range: {
-            'min': 100,
-            'max': 10000
-          },
-          step: 100,
-          tooltips: true,
-          format: {
-            to: value => Math.round(value),
-            from: value => Number(value)
-          }
-        });
-      
-        // Update the viewer range   
-        viewerSlider.noUiSlider.on('update', function (values) {
-          const min = Math.round(values[0]);
-          const max = Math.round(values[1]);
-          display.textContent = `${min.toLocaleString()} – ${max.toLocaleString()}`;
+        document.addEventListener("DOMContentLoaded", () => {
+            window.streamModal = new bootstrap.Modal(document.getElementById('streamSetupModal'));
+
+            // initialize the slider 
+            window.viewerSlider = document.getElementById('modal-viewer-range');
+            const rangeDisplay = document.getElementById('modal-range-display');
+
+            noUiSlider.create(viewerSlider, {
+                start: [100, 10000],
+                connect: true,
+                range: { min: 100, max: 10000 },
+                step: 100,
+                tooltips: true,
+                format: { to: v=> Math.round(v), from: v=> Number(v) }
+            });
+
+            viewerSlider.noUiSlider.on('update', (vals) => {
+                const [min, max] = vals.map(v=> Math.round(v));
+                rangeDisplay.textContent = `${min.toLocaleString()} – ${max.toLocaleString()}`;
+            });
+
+            const form = document.getElementById('stream-setup-form');
+            
+            form.addEventListener('submit', e => {
+                e.preventDefault();  // no page reload
+                const title = document.getElementById('stream-title').value.trim();
+                const [min, max] = viewerSlider.noUiSlider.get().map(Number);
+                const selectedGenreInput = document.querySelector('input[name="genre"]:checked');
+                const genre = selectedGenreInput ? selectedGenreInput.value : null;
+
+                // push settings into your page
+                document.getElementById('displayed-title').textContent = title || 'Fake It Till You Make It - Live Stream';
+
+                // Show the first selected genre (or empty)
+                const genreBadge = document.getElementById('genre-badge');
+                genreBadge.textContent = genre ?? '';
+
+                // Save viewer min/max range globally for updating viewer count
+                window.viewerMin = min;
+                window.viewerMax = max;
+
+                // Start viewer count updates
+                startViewerCountUpdates();
+
+                streamModal.hide();
+            });
         });
 
-        // update the viewer count  
-        function updateViewerCount() {
-            const [min, max] = viewerSlider.noUiSlider.get().map(Number); 
-            const count = Math.floor(Math.random() * (max - min + 1)) + min; 
-            viewerCount.textContent = count.toLocaleString();
+        function startViewerCountUpdates() {
+            const viewerNumber = document.getElementById('viewer-number');
+
+            function updateViewerCount() {
+                if (window.viewerMin !== undefined && window.viewerMax !== undefined) {
+                    const count = Math.floor(Math.random() * (window.viewerMax - window.viewerMin + 1)) + window.viewerMin;
+                    viewerNumber.textContent = count.toLocaleString();
+                }
+            }
+
+            // Update immediately, then every 10s
+            updateViewerCount();
+            viewerCountInterval = setInterval(updateViewerCount, 10000);
         }
-      
-        setInterval(updateViewerCount, 10000); // update every 10s
-        updateViewerCount(); // initial value
     </script>
-    <script>
-        const titleInput = document.getElementById("stream-title");
-        const displayedTitle = document.getElementById("displayed-title");
-      
-        titleInput.addEventListener("input", () => {
-          const title = titleInput.value.trim();
-          displayedTitle.textContent = title || "Fake It Till You Make It - Live Feed";
-        });
-    </script>
-    <!-- At the end of the body, add scripts in this order -->
     <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
     <script src="{{ url_for('static', filename='js/debug-tools.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chat-display.js') }}"></script>
@@ -221,5 +230,4 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
