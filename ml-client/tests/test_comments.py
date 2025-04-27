@@ -81,3 +81,5 @@ def test_expression_analysis_returns_valid_expression():
     image_bytes = get_test_image_bytes()
     expression = analyze_expression(image_bytes)
     assert expression in {"neutral", "smiling", "angry", "frowning", "waving"}
+
+
