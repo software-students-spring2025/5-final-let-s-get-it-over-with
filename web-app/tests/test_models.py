@@ -1,19 +1,24 @@
-import bcrypt
+"""
+Tests for models.py under auth
+"""
 from unittest.mock import patch, MagicMock
-from bson.objectid import ObjectId
 import sys
 import os
+import bcrypt
+from bson.objectid import ObjectId
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from auth.models import User
 
 
 def test_verify_password_correct():
+    """Tests password verfication for correct password"""
     password = "testpass"
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     assert User.verify_password(hashed, password) is True
 
 
 def test_verify_password_incorrect():
+    """Tests password verfication for incorrect password"""
     password = "testpass"
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     assert User.verify_password(hashed, "wrongpass") is False
@@ -21,6 +26,7 @@ def test_verify_password_incorrect():
 
 @patch("auth.models.users_collection")
 def test_create_user(mock_users_collection):
+    """Tests creating a new user"""
     username = "testuser"
     email = "testuser@example.com"
     password = "testpasasword"
@@ -42,6 +48,7 @@ def test_create_user(mock_users_collection):
 
 @patch("auth.models.users_collection")
 def test_get_by_username(mock_users_collection):
+    """Tests retrieving a stored user"""
     mock_user = {"username": "tester", "email": "tester@example.com"}
     mock_users_collection.find_one.return_value = mock_user
 
@@ -53,6 +60,7 @@ def test_get_by_username(mock_users_collection):
 
 @patch("auth.models.users_collection")
 def test_get_by_email(mock_users_collection):
+    """Tests retrieving a user by email"""
     mock_user = {"username": "testuser2", "email": "testuser2@example.com"}
     mock_users_collection.find_one.return_value = mock_user
 
@@ -64,6 +72,7 @@ def test_get_by_email(mock_users_collection):
 
 @patch("auth.models.users_collection")
 def test_get_by_id(mock_users_collection):
+    """Tests retrieving a user by id"""
     fake_id = ObjectId()
     mock_user = {"_id": fake_id, "username": "user_id", "email": "id@example.com"}
     mock_users_collection.find_one.return_value = mock_user

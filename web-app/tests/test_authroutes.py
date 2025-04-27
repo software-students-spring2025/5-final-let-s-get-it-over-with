@@ -1,22 +1,23 @@
-import pytest
-import bcrypt
-from flask import session
+"""
+Tests for routes.py under auth
+"""
 from unittest.mock import patch, MagicMock
-from flask import Flask
 import sys
 import os
+import pytest
+import bcrypt
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from auth.routes import auth_bp
 import app
 
-@pytest.fixture
-def client():
+@pytest.fixture(name="client")
+def fixture_client():
+    """Creates client used for testing"""
     app.app.config['TESTING'] = True
     with app.app.test_client() as client:
         yield client
 
-
 def test_signup_success(client):
+    """Tests successful signup"""
     user_data = {
         "username": "newuser",
         "email": "new@example.com",
@@ -38,6 +39,7 @@ def test_signup_success(client):
 
 
 def test_signup_existing_username(client):
+    """Tests signup when username already exists"""
     user_data = {
         "username": "existinguser",
         "email": "email@example.com",
@@ -47,10 +49,10 @@ def test_signup_existing_username(client):
 
     with patch("auth.routes.users_collection.find_one", return_value={"username": "existinguser"}):
         response = client.post("/auth/signup", data=user_data)
-        assert response.status_code == 200 
-
+        assert response.status_code == 200
 
 def test_login_success(client):
+    """Tests sucessful login"""
     username = "validuser"
     password = "correctpass"
     hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
@@ -61,14 +63,15 @@ def test_login_success(client):
         response = client.post("/auth/login", data={"username": username, "password": password})
         assert response.status_code == 302
 
-
 def test_login_failure(client):
+    """Tests failed login"""
     with patch("auth.routes.users_collection.find_one", return_value=None):
         response = client.post("/auth/login", data={"username": "user", "password": "wrong"})
         assert response.status_code == 200  # stays on login page
 
 
 def test_logout(client):
+    """Tests logging out"""
     with client.session_transaction() as sess:
         sess["username"] = "test"
         sess["user_id"] = "123"
