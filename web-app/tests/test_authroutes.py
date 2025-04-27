@@ -7,7 +7,9 @@ import os
 import pytest
 import bcrypt
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# pylint: disable=wrong-import-position
 import app
+# pylint: enable=wrong-import-position
 
 @pytest.fixture(name="client")
 def fixture_client():

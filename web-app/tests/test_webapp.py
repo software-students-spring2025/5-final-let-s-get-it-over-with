@@ -9,8 +9,10 @@ from flask import session
 from werkzeug.wrappers import Response
 import requests
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# pylint: disable=wrong-import-position
 import app
 import auth
+# pylint: enable=wrong-import-position
 
 @pytest.fixture(name="client")
 def fixture_client():
