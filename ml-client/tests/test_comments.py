@@ -1,16 +1,16 @@
+"""
+Some tests for the ml-client
+"""
+#pylint: disable=no-member
+#pylint: disable=too-many-locals
+from io import BytesIO
 import cv2
 import mediapipe as mp
 import numpy as np
-from io import BytesIO
 from PIL import Image
-from unittest.mock import patch, MagicMock
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import comments
-import base64
 
 def analyze_expression(image_bytes):
+    """helper function for determining expressions, logic taken from comment generation"""
     np_arr = np.frombuffer(image_bytes, np.uint8)
     image_cv = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
     if image_cv is None:
@@ -26,8 +26,8 @@ def analyze_expression(image_bytes):
 
         left_mouth = landmarks[61]
         right_mouth = landmarks[100]
-        mouth_width = ((right_mouth.x - left_mouth.x) ** 2 + (right_mouth.y - left_mouth.y) ** 2) ** 0.5
-
+        mouth_width = ((right_mouth.x - left_mouth.x) ** 2
+        + (right_mouth.y - left_mouth.y) ** 2) ** 0.5
         top_lip = landmarks[13]
         bottom_lip = landmarks[14]
         mouth_height = abs(top_lip.y - bottom_lip.y)
@@ -72,14 +72,14 @@ def analyze_expression(image_bytes):
     return expression
 
 def get_test_image_bytes():
+    """creates a dummpy image to be analyzed"""
     img = Image.new("RGB", (100, 100), color="red")
     buffer = BytesIO()
     img.save(buffer, format="JPEG")
     return buffer.getvalue()
 
 def test_expression_analysis_returns_valid_expression():
+    """tests whether expressions are valid"""
     image_bytes = get_test_image_bytes()
     expression = analyze_expression(image_bytes)
     assert expression in {"neutral", "smiling", "angry", "frowning", "waving"}
-
-
