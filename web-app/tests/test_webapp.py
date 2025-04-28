@@ -134,5 +134,4 @@ def test_proxy_failure(monkeypatch, client):
     resp = client.post('/generate-comment', data=js.dumps({}), content_type='application/json')
     assert resp.status_code == 500
     assert resp.get_json() == {'error': 'ML service unreachable'}
-
     
