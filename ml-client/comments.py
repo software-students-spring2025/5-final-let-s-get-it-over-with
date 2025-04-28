@@ -30,8 +30,8 @@ db = client["chatbots"]
 collection = db["messages"]
 
 # Load OpenAI API key  
-def get_openai_client():
-    return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai_api_key = os.getenv("OPENAI_API_KEY")
+openai_client = OpenAI(api_key=openai_api_key)
 
 # Fake usernames pool
 user_pool = [
