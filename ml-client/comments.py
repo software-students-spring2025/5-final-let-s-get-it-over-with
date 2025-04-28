@@ -1,6 +1,7 @@
 """
 ML Client - Processes and send webcam images to openAI API to generate comments
 """
+
 import base64
 import os
 
@@ -11,13 +12,13 @@ from binascii import Error as BinasciiError
 
 from openai import OpenAI
 from io import BytesIO
-from PIL import Image 
+from PIL import Image
 import random
 
 import cv2
 import mediapipe as mp
 import numpy as np
-import traceback # for debugging
+import traceback  # for debugging
 from random import choice, randint
 
 # Flask app
@@ -29,24 +30,42 @@ client = MongoClient(os.getenv("MONGO_URI"))
 db = client["chatbots"]
 collection = db["messages"]
 
-# Load OpenAI API key  
+# Load OpenAI API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
-openai_client = OpenAI(api_key = openai_api_key)
+openai_client = OpenAI(api_key=openai_api_key)
 
 # Fake usernames pool
 user_pool = [
-    "PixelPunk42", "NoScopeNate", "GGnGrace", "SnackAttack", "LootGoblin",
-    "ClutchMaster", "VibeCheck", "StreamQueen", "LagSlayer", "CamChamp",
-    "EmoteLord", "WaffleWizard", "CritKitty", "BoomHeadshot", "TTV_Jay",
-    "SaltySocks", "PotionPete", "ChillCaster", "MemeMachine", "XPHunter"
+    "PixelPunk42", 
+    "NoScopeNate", 
+    "GGnGrace", 
+    "SnackAttack", 
+    "LootGoblin",
+    "ClutchMaster", 
+    "VibeCheck", 
+    "StreamQueen", 
+    "LagSlayer", 
+    "CamChamp",
+    "EmoteLord", 
+    "WaffleWizard", 
+    "CritKitty", 
+    "BoomHeadshot", 
+    "TTV_Jay",
+    "SaltySocks", 
+    "PotionPete", 
+    "ChillCaster", 
+    "MemeMachine", 
+    "XPHunter"
 ]
-    
+
+  
 @app.route("/generate-comment", methods=["POST"])
 def generate_comment():
     # Retrieve the image and decode it
-    print("DEBUG: Connection Successful") 
+    print("DEBUG: Connection Successful")
     # Extract image field from JSON data set in a request
     data = request.json.get("image")
+    session_username = request.json.get("username") # Might need to remove this 
     if not data:
         return jsonify({"error": "No image data received"}), 400
 
@@ -75,12 +94,15 @@ def generate_comment():
             landmarks = results.multi_face_landmarks[0].landmark
             
             # smile detector using mouth corner distance and openness
-            left_mouth= landmarks[61]  # mouth left corner
+            left_mouth = landmarks[61]  # mouth left corner
             right_mouth = landmarks[100]  # mouth right corner
-            mouth_width = ((right_mouth.x - left_mouth.x) ** 2 + (right_mouth.y - left_mouth.y) ** 2) ** 0.5
+            mouth_width = (
+                (right_mouth.x - left_mouth.x) ** 2 
+                + (right_mouth.y - left_mouth.y) ** 2
+            ) ** 0.5
 
-            top_lip = landmarks[13]    # upper lip
-            bottom_lip = landmarks[14] # lower lip
+            top_lip = landmarks[13]  # upper lip
+            bottom_lip = landmarks[14]  # lower lip
             mouth_height = abs(top_lip.y - bottom_lip.y)
 
             # NEEDS finetunning: frown detector: mouth corners are down
@@ -99,7 +121,7 @@ def generate_comment():
             avg_eyebrow_lift = (eyebrow_lift_left + eyebrow_lift_right) / 2
 
             # Inner eyebrow pinch (near center)
-            inner_left = landmarks[105]   
+            inner_left = landmarks[105]
             inner_right = landmarks[334]
             eyebrow_pinch = abs(inner_left.x - inner_right.x)
 
@@ -135,38 +157,39 @@ def generate_comment():
 
     print("Detected expression:", expression)
     # Simulate what the bot would "see" and say
+    # Remove the session_username??
     reaction_prompt = f"Write a short, fun, Twitch-style comment reacting to a webcam stream where the streamer looks like they're {expression}. Spam emojis and Twitch lingo. Keep it casual."
-    video_prompt = "Write a comment reacting to a stream."
-
-    # random_prompt = random.choice([
-    #     "Write a funny Twitch chat message with gamer lingo.",
-    #     "Say something hype or supportive in Twitch style.",
-    #     "Drop a playful comment you'd see in a Twitch livestream chat.",
-    #     "React to the gameplay or stream vibe in a short Twitch message.",
-    #     "Tease the  Twitch streamer like you're a regular viewer."
-    # ])
+    video_prompt = "React to this frame from the stream"
 
     # Randomly decide prompt type (60% video-based, 40% reaction to facial expressions)
     prompt = video_prompt if random.random() < 0.6 else reaction_prompt
-
-    # Randomly decide prompt type (70% reaction-based, 30% random)
-    # prompt = reaction_prompt if random.random() < 0.7 else random_prompt
 
     try:
         # send request to OpenAI to generate twitch style comment
         response = openai_client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are one of thousands of active viewers of the popular live streamer PrestonGames and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps"},
-                 {"role": "user",
-                   "content": [
-                         {"type": "text", "text": "React to this frame from the stream."},
-                         {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{encoded}"}}
-                     ]}
+                {
+                    "role": "system", 
+                    "content": f'You are one of thousands of active viewers of the popular live streamer "{session_username}" and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps',
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text", 
+                            "text": prompt,
+                        },
+                        {
+                            "type": "image_url", 
+                            "image_url": {"url": f"data:image/jpeg;base64,{encoded}"},
+                        },
+                     ],
+                },
             ],
-            temperature=0.8,            # makes the response more random and fun
-            presence_penalty=0.3,       # encourages more variety
-            max_tokens=20               # limits response length 
+            temperature=0.8,  # makes the response more random and fun
+            presence_penalty=0.3,  # encourages more variety
+            max_tokens=20  # limits response length 
         )
         print("RESPONSE:", response)
         message = response.choices[0].message.content
@@ -174,27 +197,29 @@ def generate_comment():
 
         username = random.choice(user_pool)
 
-        return jsonify({
-            "comment": message,
-            "username": username,
-        })
+        return jsonify(
+            {
+                "comment": message,
+                "username": username,
+            }
+        )
 
     except Exception as e:
         print("DEBUG: IS THIS THE PROBLEM??")
-        print ("EXCEPTION:", e)
-        print ("EXCEPTION TYPE:", e.__class__)
-        return jsonify({"error": str(e)}), 500   
+        print("EXCEPTION:", e)
+        print("EXCEPTION TYPE:", e.__class__)
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/process-question", methods=["POST"])
 def process_question():
     # Get the question from the request
     data = request.json
-    if not data or 'question' not in data:
+    if not data or "question" not in data:
         return jsonify({"error": "No question received"}), 400
     
-    question = data['question']
-    response_count = min(data.get('responseCount', 1), 5)  # Cap at 5 responses
+    question = data["question"]
+    response_count = min(data.get("responseCount", 1), 5)  # Cap at 5 responses
     
     try:
         responses = []
@@ -205,7 +230,7 @@ def process_question():
             "You're a calm and supportive Twitch viewer who gives thoughtful responses.",
             "You're a funny Twitch viewer who likes to make jokes and puns.",
             "You're a Twitch viewer who's very knowledgeable about gaming and tech.",
-            "You're a Twitch viewer who uses lots of slang and Twitch-specific terms."
+            "You're a Twitch viewer who uses lots of slang and Twitch-specific terms.",
         ]
         
         random.shuffle(personas)
@@ -215,11 +240,17 @@ def process_question():
             response = openai_client.chat.completions.create(
                 model="gpt-4",
                 messages=[
-                    {"role": "system", "content": personas[i % len(personas)] + "IMPORTANT: Always sound like a real, chill human who genuinely loves watching Twitch. Never mention you're AI—just be a casual gamer/viewer with personal takes, keep it under 2 sentences, and feel free to drop emojis"},
-                    {"role": "user", "content": question}
+                    {
+                        "role": "system", 
+                        "content": personas[i % len(personas)] + "IMPORTANT: Always sound like a real, chill human who genuinely loves watching Twitch. Never mention you're AI—just be a casual gamer/viewer with personal takes, keep it under 2 sentences, and feel free to drop emojis",
+                    },
+                    {
+                        "role": "user", 
+                        "content": question,
+                    }
                 ],
                 temperature=0.7,
-                max_tokens= 30
+                max_tokens=30
             )
             
             message = response.choices[0].message.content
@@ -233,7 +264,6 @@ def process_question():
         print("ERROR PROCESSING QUESTION:", e)
         print("ERROR TYPE:", e.__class__)
         return jsonify({"error": str(e)}), 500
-
 
 
 if __name__ == "__main__":
