@@ -22,6 +22,7 @@ pytest = "*"
 pylint = "*"
 black = "*"
 
+
 [dev-packages]
 
 [requires]
