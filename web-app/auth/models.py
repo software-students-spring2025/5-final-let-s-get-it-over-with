@@ -1,10 +1,12 @@
 """
-Defines the User model with methods to create users, retrieve users by username, email, or ID, 
+Defines the User model with methods to create users, retrieve users by username, email, or ID,
 and verify passwords, interacting with a MongoDB users collection.
 """
+
 import bcrypt
 from bson.objectid import ObjectId
 from auth import users_collection
+
 
 class User:
     """
@@ -12,18 +14,15 @@ class User:
     Provides methods for creating, retrieving, and authenticating users.
     Interacts with MongoDB users collection.
     """
+
     @staticmethod
     def create_user(username, email, password):
         """
         Create a new user with hashed password
         """
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
-        user_data = {
-            "username": username,
-            "email": email,
-            "password": hashed_password
-        }
+        user_data = {"username": username, "email": email, "password": hashed_password}
 
         result = users_collection.insert_one(user_data)
         return result.inserted_id
@@ -54,4 +53,4 @@ class User:
         """
         Verify if the provided password matches the stored hashed password
         """
-        return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password)
+        return bcrypt.checkpw(provided_password.encode("utf-8"), stored_password)

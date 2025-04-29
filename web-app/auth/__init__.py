@@ -1,6 +1,7 @@
 """
-Initializes a connection to the MongoDB Atlas 'chatbots' database, 
+Initializes a connection to the MongoDB Atlas 'chatbots' database
 """
+
 import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
