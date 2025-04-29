@@ -55,15 +55,16 @@ python -m pip install --upgrade pip
 pip install pipenv
 ```
 4. Install Dependencies:
-ML Client
+- ML Client
 ```
 cd ml-client
 pipenv install
 ```
-Web App
+- Web App
 ```
 cd ../web-app
 pipenv install
+```
 
 ### Environment Variables
 
@@ -78,9 +79,10 @@ touch env
 ```
 MONGO_URI=your_mongo_uri_here
 MONGO_DBNAME=your_mongodb_database_name_here
-OPENAI_API_KEY=
+OPENAI_API_KEY=your_openai_api_here
 ```
-#### Instructions on How to get an OpenAI API Key
+
+### Instructions on How to get an OpenAI API Key
 
 ### Database Initialization
 
