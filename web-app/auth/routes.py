@@ -80,7 +80,7 @@ def login():
             flash('Login successful!', 'success')
 
             #DOUBLE CHECK THIS WORKS, ORIGINALLY return redirect(url_for('home'))
-            return redirect(url_for('main.home'))
+            return redirect(url_for('home'))
         flash('Invalid username or password', 'error')
 
     return render_template('auth/login.html')

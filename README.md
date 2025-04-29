@@ -1,5 +1,5 @@
 ![Lint-free](https://github.com/software-students-spring2025/5-final-let-s-get-it-over-with/actions/workflows/lint.yml/badge.svg)
-![CD-Digitial Ocean]()
+![CD-Digitial Ocean](https://github.com/software-students-spring2025/5-final-let-s-get-it-over-with/actions/workflows/deploy.yml/badge.svg)
 ![ML-CLient CI](https://github.com/software-students-spring2025/5-final-let-s-get-it-over-with/actions/workflows/ml-client.yml/badge.svg)
 ![Web-app CI](https://github.com/software-students-spring2025/5-final-let-s-get-it-over-with/actions/workflows/web-app.yml/badge.svg)
 # Final Project
