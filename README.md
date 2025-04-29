@@ -82,8 +82,6 @@ MONGO_DBNAME=your_mongodb_database_name_here
 OPENAI_API_KEY=your_openai_api_here
 ```
 
-### Instructions on How to get an OpenAI API Key
-
 ### Database Initialization
 
 The database is automatically initialized with default categories when the application starts.
