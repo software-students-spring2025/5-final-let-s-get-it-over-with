@@ -19,5 +19,5 @@ try:
     users_collection.create_index("email", unique=True)
 
     print("Connected to MongoDB successfully!")
-except Exception as e:
-    print(f"Failed to connect to MongoDB: {e}")
+except (ValueError, IOError, KeyError) as error:
+    print(f"Failed to connect to MongoDB: {error}")

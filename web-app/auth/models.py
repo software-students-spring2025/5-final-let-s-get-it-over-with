@@ -7,6 +7,11 @@ from bson.objectid import ObjectId
 from auth import users_collection
 
 class User:
+    """
+    User model for authentication and user management.
+    Provides methods for creating, retrieving, and authenticating users.
+    Interacts with MongoDB users collection.
+    """
     @staticmethod
     def create_user(username, email, password):
         """
