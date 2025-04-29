@@ -7,7 +7,8 @@ import bcrypt
 from auth import users_collection
 
 # Create a Blueprint
-auth_bp = Blueprint("auth", __name__, url_prefix='/auth')
+auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
+
 
 @auth_bp.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -52,7 +53,7 @@ def signup():
             return redirect(url_for("auth.login"))
         except (ValueError, IOError, KeyError) as error:
             flash(f"An error occurred: {str(error)}", "error")
-            return render_template('auth/signup.html')
+            return render_template("auth/signup.html")
 
     return render_template("auth/signup.html")
 
@@ -83,8 +84,8 @@ def login():
 
 @auth_bp.route("/logout")
 def logout():
-    """ 
-    Logoout functionality and route. 
+    """
+    Logoout functionality and route.
     """
     session.clear()
     flash("You have been logged out", "info")
