@@ -1,13 +1,16 @@
 """
 Some tests for the ml-client
 """
+
 # pylint: disable=too-few-public-methods
 # pylint: disable=redefined-outer-name
 import random
 import pytest
 
 
-def generate_twitch_comment(session_username, expression, encoded_image, openai_client, user_pool):
+def generate_twitch_comment(
+    session_username, expression, encoded_image, openai_client, user_pool
+):
     """Generates a comment based on the logic from comments.py."""
     reaction_prompt = (
         f"Write a short, fun, Twitch-style comment reacting to a webcam stream "
@@ -37,8 +40,10 @@ def generate_twitch_comment(session_username, expression, encoded_image, openai_
                 "role": "user",
                 "content": [
                     {"type": "text", "text": prompt},
-                    {"type": "image_url", "image_url":
-                     {"url": f"data:image/jpeg;base64,{encoded_image}"}},
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"},
+                    },
                 ],
             },
         ],
@@ -92,11 +97,13 @@ class FakeCompletions:
 
 class FakeChat:
     """Fake chat endpoint."""
+
     completions = FakeCompletions()
 
 
 class FakeOpenAIClient:
     """Fake OpenAI client."""
+
     chat = FakeChat()
 
 
@@ -111,11 +118,13 @@ class FakeErrorCompletions:
 
 class FakeErrorChat:
     """Fake chat that always fails."""
+
     completions = FakeErrorCompletions()
 
 
 class FakeOpenAIClientError:
     """Fake OpenAI client that simulates an error."""
+
     chat = FakeErrorChat()
 
 

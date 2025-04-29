@@ -1,5 +1,5 @@
 ![Lint-free](https://github.com/software-students-spring2025/5-final-let-s-get-it-over-with/actions/workflows/lint.yml/badge.svg)
-![CD-Digitial Ocean]()
+![CD-Digitial Ocean](https://github.com/software-students-spring2025/5-final-let-s-get-it-over-with/actions/workflows/deploy.yml/badge.svg)
 ![ML-CLient CI](https://github.com/software-students-spring2025/5-final-let-s-get-it-over-with/actions/workflows/ml-client.yml/badge.svg)
 ![Web-app CI](https://github.com/software-students-spring2025/5-final-let-s-get-it-over-with/actions/workflows/web-app.yml/badge.svg)
 # Final Project
@@ -55,15 +55,16 @@ python -m pip install --upgrade pip
 pip install pipenv
 ```
 4. Install Dependencies:
-ML Client
+- ML Client
 ```
 cd ml-client
 pipenv install
 ```
-Web App
+- Web App
 ```
 cd ../web-app
 pipenv install
+```
 
 ### Environment Variables
 
@@ -78,9 +79,10 @@ touch env
 ```
 MONGO_URI=your_mongo_uri_here
 MONGO_DBNAME=your_mongodb_database_name_here
-OPENAI_API_KEY=
+OPENAI_API_KEY=your_openai_api_here
 ```
-#### Instructions on How to get an OpenAI API Key
+
+### Instructions on How to get an OpenAI API Key
 
 ### Database Initialization
 
