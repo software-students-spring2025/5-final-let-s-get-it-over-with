@@ -6,3 +6,4 @@ python-dotenv
 Pillow
 opencv-python
 mediapipe
+pytest
