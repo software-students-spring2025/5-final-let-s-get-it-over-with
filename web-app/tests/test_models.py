@@ -1,16 +1,18 @@
 """
 Tests for models.py under auth
 """
+
 from unittest.mock import patch, MagicMock
 import sys
 import os
 import bcrypt
 from bson.objectid import ObjectId
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # pylint: disable=wrong-import-position
 from auth.models import User
-# pylint: enable=wrong-import-position
 
+# pylint: enable=wrong-import-position
 
 
 def test_verify_password_correct():
@@ -69,7 +71,9 @@ def test_get_by_email(mock_users_collection):
 
     user = User.get_by_email("testuser2@example.com")
 
-    mock_users_collection.find_one.assert_called_once_with({"email": "testuser2@example.com"})
+    mock_users_collection.find_one.assert_called_once_with(
+        {"email": "testuser2@example.com"}
+    )
     assert user == mock_user
 
 
