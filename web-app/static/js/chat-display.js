@@ -1,17 +1,11 @@
 // Display AI response to voice command
 function showBotResponse(comment) {
-  if (chatWindow && !chatWindow.closed) {
-      chatWindow.postMessage({ comment }, "*");
-  }
   
   displayMessage(comment);
 }
 
 // Display webcam-generated comment
 function showComment(data) {
-  if (chatWindow && !chatWindow.closed) {
-      chatWindow.postMessage({ comment: data.comment }, "*");
-  }
   
   displayMessage(data);
 }

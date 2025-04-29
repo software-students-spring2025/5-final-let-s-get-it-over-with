@@ -39,9 +39,6 @@ function startDetection() {
     isDetecting = true;
     toggleBtn.textContent = "Stop Live Stream";
 
-    if (!chatWindow || chatWindow.closed) {
-        chatWindow = window.open("/chat", "_blank", "width=400,height=600");
-    } 
 
     // Start voice recognition
     if (recognition) {

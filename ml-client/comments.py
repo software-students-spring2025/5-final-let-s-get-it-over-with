@@ -36,26 +36,30 @@ openai_client = OpenAI(api_key=openai_api_key)
 
 # Fake usernames pool
 user_pool = [
-    "PixelPunk42", 
-    "NoScopeNate", 
-    "GGnGrace", 
-    "SnackAttack", 
-    "LootGoblin",
-    "ClutchMaster", 
-    "VibeCheck", 
-    "StreamQueen", 
-    "LagSlayer", 
-    "CamChamp",
-    "EmoteLord", 
-    "WaffleWizard", 
-    "CritKitty", 
-    "BoomHeadshot", 
-    "TTV_Jay",
-    "SaltySocks", 
-    "PotionPete", 
-    "ChillCaster", 
-    "MemeMachine", 
-    "XPHunter"
+    "PixelPunk42", "noScopeNate", "gGnGrac3", "snack_att4ck", "lootg0blin",
+    "clutchM4ster", "v1beCheck", "streamqueen7", "lagSlay3r", "camchmp",
+    "3mot3Lord", "w4ffleWizard", "cr1tK1tty", "boom_headsh0t", "ttv_jay",
+    "s4ltySocks", "p0tionPet3", "ch1llcaster", "mememachine23", "xpHunt3r",
+    "afk_ang3l", "qu1ckscope_su3", "m4na_mus3", "t1ltedtina", "gh0st_ping",
+    "respawnRon77", "dps_Daisy_", "banhamm3r", "troll.tam3r", "dr0pBearDan",
+    "claptrapKev", "p1xelP1rat3", "ggGalaxyx", "echo_essence", "nerf.n1na",
+    "xpleech3r", "metamilo", "snaccPacc", "baitm4ster", "camp_k1ng",
+    "pingPanda_", "zoomerZ3d", "mute_m1k3", "framedropfred", "potionNova",
+    "silentSn1pez", "no0bslayer", "alt_tab_tom", "queueQueen88", "sweatl0rd",
+    "tofuOverlord", "kiw1juiice", "bl1nk.n0pe", "muffinmistake", "yeet_2025",
+    "casualfr1day", "rebootedkat", "breadslice_v2", "emoj1spammer", "null_typ3",
+    "glitchgr4ndpa", "nightOwl44", "3mberw1ng", "boba_overdose", "xtraCheezy",
+    "flatpackfiend", "coldbrew_99", "moon.bag", "flashbang12", "whalecry",
+    "meowm0d", "tripletacos", "awk_r3na", "spookyCarrot", "404_user_here",
+    "sushi_dad", "kr0n0z", "b3ep_b00p", "quiet.clickz", "goldfish_wish",
+    "void_vibes", "killYourWiFi", "simpForStars", "duck_onboard", "milkdrop_7",
+    "blank_space", "nerdSoup123", "jackedApplet", "bitz.n.bobs", "fresh_oats",
+    "warmboot", "1c3cubee", "rage_p0et", "nvm.ok", "offbeat.drumz",
+    "gummyphon3", "leaf.exe", "tvstaticcc", "tripwire.me", "catfactz_irl", "gl1tchm0de", "snaccident", "voidlet", "b33pbloop", "fraggot", 
+    "sh4dowfax", "n1ghtbloom", "dr1zzle", "crunchee", "laggedout", 
+    "p1x3lburn", "m0n0chrome", "wobbl3", "tw33kz", "hushbyte", 
+    "gr1mble", "f1zzletop", "v1beseek3r", "snoozaloo", "blurzt", 
+    "sp00kify", "j1ggletank", "zapple", "muxify", "chompr"
 ]
 
   
@@ -158,7 +162,7 @@ def generate_comment():
     print("Detected expression:", expression)
     # Simulate what the bot would "see" and say
     # Remove the session_username??
-    reaction_prompt = f"Write a short, fun, Twitch-style comment reacting to a webcam stream where the streamer looks like they're {expression}. Spam emojis and Twitch lingo. Keep it casual."
+    reaction_prompt = f"Write a short, fun, Twitch-style comment reacting to a webcam stream where the streamer looks like they're {expression} in less than 5 words"
     video_prompt = "React to this frame from the stream"
 
     # Randomly decide prompt type (60% video-based, 40% reaction to facial expressions)
@@ -171,7 +175,7 @@ def generate_comment():
             messages=[
                 {
                     "role": "system", 
-                    "content": f'You are one of thousands of active viewers of the popular live streamer "{session_username}" and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps',
+                    "content": 'You are one of thousands of active viewers of a live streamer and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps',
                 },
                 {
                     "role": "user",
@@ -242,7 +246,7 @@ def process_question():
                 messages=[
                     {
                         "role": "system", 
-                        "content": personas[i % len(personas)] + "IMPORTANT: Always sound like a real, chill human who genuinely loves watching Twitch. Never mention you're AI—just be a casual gamer/viewer with personal takes, keep it under 2 sentences, and feel free to drop emojis",
+                        "content": personas[i % len(personas)] + "You are one of thousands of active viewers of a live streamer and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps",
                     },
                     {
                         "role": "user", 
@@ -250,12 +254,19 @@ def process_question():
                     }
                 ],
                 temperature=0.7,
-                max_tokens=30
+                max_tokens=20
             )
             
             message = response.choices[0].message.content
-            responses.append(message)
-            print(f"VOICE RESPONSE {i+1}:", message)
+            random_username = random.choice(user_pool)
+
+            # Instead of just appending message, append a dictionary
+            responses.append({
+                "username": random_username,
+                "comment": message
+            })
+
+            print(f"VOICE RESPONSE {i+1}: {message} from {random_username}")
         
         # Return all responses
         return jsonify({"responses": responses})
