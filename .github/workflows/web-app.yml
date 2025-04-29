@@ -31,7 +31,7 @@ jobs:
 
     - name: Build and Push Docker image
       run: |
-          docker build -t fake-it-till-you-make-it-web-app:latest ./web-app
+          docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/fake-it-till-you-make-it-web-app:latest" ./web-app
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/fake-it-till-you-make-it-web-app:latest
   
     - name: Run web-app tests

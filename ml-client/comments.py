@@ -346,7 +346,7 @@ def process_question():
                 messages=[
                     {
                         "role": "system",
-                        "content": personas[i % len(personas)] 
+                        "content": personas[i % len(personas)]
                         + "You are one of thousands of active viewers of a live streamer and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps",
                     },
                     {

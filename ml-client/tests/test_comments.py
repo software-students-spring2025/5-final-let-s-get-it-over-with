@@ -42,7 +42,7 @@ def generate_twitch_comment(
                     {"type": "text", "text": prompt},
                     {
                         "type": "image_url", 
-                        "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"}
+                        "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"},
                     },
                 ],
             },
@@ -97,6 +97,7 @@ class FakeCompletions:
 
 class FakeChat:
     """Fake chat endpoint."""
+
     completions = FakeCompletions()
 
 

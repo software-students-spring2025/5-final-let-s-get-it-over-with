@@ -36,7 +36,7 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          docker build -t fake-it-till-you-make-it-ml-client:latest ./ml-client
+          docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/fake-it-till-you-make-it-ml-client:latest" ./ml-client
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/fake-it-till-you-make-it-ml-client:latest
 
       - name: Run machine-learning tests
