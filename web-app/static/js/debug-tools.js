@@ -4,7 +4,7 @@ function addSpeechDebugger() {
   debug.id = 'speech-debugger';
   debug.style.position = 'fixed';
   debug.style.bottom = '10px';
-  debug.style.right = '10px';
+  debug.style.left = '10px';
   debug.style.backgroundColor = 'rgba(0,0,0,0.7)';
   debug.style.color = 'white';
   debug.style.padding = '10px';
