@@ -36,40 +36,140 @@ openai_client = OpenAI(api_key=openai_api_key)
 
 # Fake usernames pool
 user_pool = [
-    "PixelPunk42", "noScopeNate", "gGnGrac3", "snack_att4ck", "lootg0blin",
-    "clutchM4ster", "v1beCheck", "streamqueen7", "lagSlay3r", "camchmp",
-    "3mot3Lord", "w4ffleWizard", "cr1tK1tty", "boom_headsh0t", "ttv_jay",
-    "s4ltySocks", "p0tionPet3", "ch1llcaster", "mememachine23", "xpHunt3r",
-    "afk_ang3l", "qu1ckscope_su3", "m4na_mus3", "t1ltedtina", "gh0st_ping",
-    "respawnRon77", "dps_Daisy_", "banhamm3r", "troll.tam3r", "dr0pBearDan",
-    "claptrapKev", "p1xelP1rat3", "ggGalaxyx", "echo_essence", "nerf.n1na",
-    "xpleech3r", "metamilo", "snaccPacc", "baitm4ster", "camp_k1ng",
-    "pingPanda_", "zoomerZ3d", "mute_m1k3", "framedropfred", "potionNova",
-    "silentSn1pez", "no0bslayer", "alt_tab_tom", "queueQueen88", "sweatl0rd",
-    "tofuOverlord", "kiw1juiice", "bl1nk.n0pe", "muffinmistake", "yeet_2025",
-    "casualfr1day", "rebootedkat", "breadslice_v2", "emoj1spammer", "null_typ3",
-    "glitchgr4ndpa", "nightOwl44", "3mberw1ng", "boba_overdose", "xtraCheezy",
-    "flatpackfiend", "coldbrew_99", "moon.bag", "flashbang12", "whalecry",
-    "meowm0d", "tripletacos", "awk_r3na", "spookyCarrot", "404_user_here",
-    "sushi_dad", "kr0n0z", "b3ep_b00p", "quiet.clickz", "goldfish_wish",
-    "void_vibes", "killYourWiFi", "simpForStars", "duck_onboard", "milkdrop_7",
-    "blank_space", "nerdSoup123", "jackedApplet", "bitz.n.bobs", "fresh_oats",
-    "warmboot", "1c3cubee", "rage_p0et", "nvm.ok", "offbeat.drumz",
-    "gummyphon3", "leaf.exe", "tvstaticcc", "tripwire.me", "catfactz_irl", "gl1tchm0de", "snaccident", "voidlet", "b33pbloop", "fraggot", 
-    "sh4dowfax", "n1ghtbloom", "dr1zzle", "crunchee", "laggedout", 
-    "p1x3lburn", "m0n0chrome", "wobbl3", "tw33kz", "hushbyte", 
-    "gr1mble", "f1zzletop", "v1beseek3r", "snoozaloo", "blurzt", 
-    "sp00kify", "j1ggletank", "zapple", "muxify", "chompr"
+    "PixelPunk42",
+    "noScopeNate",
+    "gGnGrac3",
+    "snack_att4ck",
+    "lootg0blin",
+    "clutchM4ster",
+    "v1beCheck",
+    "streamqueen7",
+    "lagSlay3r",
+    "camchmp",
+    "3mot3Lord",
+    "w4ffleWizard",
+    "cr1tK1tty",
+    "boom_headsh0t",
+    "ttv_jay",
+    "s4ltySocks",
+    "p0tionPet3",
+    "ch1llcaster",
+    "mememachine23",
+    "xpHunt3r",
+    "afk_ang3l",
+    "qu1ckscope_su3",
+    "m4na_mus3",
+    "t1ltedtina",
+    "gh0st_ping",
+    "respawnRon77",
+    "dps_Daisy_",
+    "banhamm3r",
+    "troll.tam3r",
+    "dr0pBearDan",
+    "claptrapKev",
+    "p1xelP1rat3",
+    "ggGalaxyx",
+    "echo_essence",
+    "nerf.n1na",
+    "xpleech3r",
+    "metamilo",
+    "snaccPacc",
+    "baitm4ster",
+    "camp_k1ng",
+    "pingPanda_",
+    "zoomerZ3d",
+    "mute_m1k3",
+    "framedropfred",
+    "potionNova",
+    "silentSn1pez",
+    "no0bslayer",
+    "alt_tab_tom",
+    "queueQueen88",
+    "sweatl0rd",
+    "tofuOverlord",
+    "kiw1juiice",
+    "bl1nk.n0pe",
+    "muffinmistake",
+    "yeet_2025",
+    "casualfr1day",
+    "rebootedkat",
+    "breadslice_v2",
+    "emoj1spammer",
+    "null_typ3",
+    "glitchgr4ndpa",
+    "nightOwl44",
+    "3mberw1ng",
+    "boba_overdose",
+    "xtraCheezy",
+    "flatpackfiend",
+    "coldbrew_99",
+    "moon.bag",
+    "flashbang12",
+    "whalecry",
+    "meowm0d",
+    "tripletacos",
+    "awk_r3na",
+    "spookyCarrot",
+    "404_user_here",
+    "sushi_dad",
+    "kr0n0z",
+    "b3ep_b00p",
+    "quiet.clickz",
+    "goldfish_wish",
+    "void_vibes",
+    "killYourWiFi",
+    "simpForStars",
+    "duck_onboard",
+    "milkdrop_7",
+    "blank_space",
+    "nerdSoup123",
+    "jackedApplet",
+    "bitz.n.bobs",
+    "fresh_oats",
+    "warmboot",
+    "1c3cubee",
+    "rage_p0et",
+    "nvm.ok",
+    "offbeat.drumz",
+    "gummyphon3",
+    "leaf.exe",
+    "tvstaticcc",
+    "tripwire.me",
+    "catfactz_irl",
+    "gl1tchm0de",
+    "snaccident",
+    "voidlet",
+    "b33pbloop",
+    "fraggot",
+    "sh4dowfax",
+    "n1ghtbloom",
+    "dr1zzle",
+    "crunchee",
+    "laggedout",
+    "p1x3lburn",
+    "m0n0chrome",
+    "wobbl3",
+    "tw33kz",
+    "hushbyte",
+    "gr1mble",
+    "f1zzletop",
+    "v1beseek3r",
+    "snoozaloo",
+    "blurzt",
+    "sp00kify",
+    "j1ggletank",
+    "zapple",
+    "muxify",
+    "chompr",
 ]
 
-  
+
 @app.route("/generate-comment", methods=["POST"])
 def generate_comment():
     # Retrieve the image and decode it
     print("DEBUG: Connection Successful")
     # Extract image field from JSON data set in a request
     data = request.json.get("image")
-    session_username = request.json.get("username") # Might need to remove this 
     if not data:
         return jsonify({"error": "No image data received"}), 400
 
@@ -80,7 +180,7 @@ def generate_comment():
     except (ValueError, BinasciiError):
         return jsonify({"error": "Invalid base64 image"}), 400
 
-    # convert bytes to pixels and process the image (e.g., analyze facial expression) 
+    # convert bytes to pixels and process the image (e.g., analyze facial expression)
     try:
         # Convert to OpenCV format
         np_arr = np.frombuffer(image_bytes, np.uint8)
@@ -96,12 +196,12 @@ def generate_comment():
         expression = "neutral"
         if results.multi_face_landmarks:
             landmarks = results.multi_face_landmarks[0].landmark
-            
+
             # smile detector using mouth corner distance and openness
             left_mouth = landmarks[61]  # mouth left corner
             right_mouth = landmarks[100]  # mouth right corner
             mouth_width = (
-                (right_mouth.x - left_mouth.x) ** 2 
+                (right_mouth.x - left_mouth.x) ** 2
                 + (right_mouth.y - left_mouth.y) ** 2
             ) ** 0.5
 
@@ -174,26 +274,26 @@ def generate_comment():
             model="gpt-4o",
             messages=[
                 {
-                    "role": "system", 
+                    "role": "system",
                     "content": 'You are one of thousands of active viewers of a live streamer and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps',
                 },
                 {
                     "role": "user",
                     "content": [
                         {
-                            "type": "text", 
+                            "type": "text",
                             "text": prompt,
                         },
                         {
-                            "type": "image_url", 
+                            "type": "image_url",
                             "image_url": {"url": f"data:image/jpeg;base64,{encoded}"},
                         },
-                     ],
+                    ],
                 },
             ],
             temperature=0.8,  # makes the response more random and fun
             presence_penalty=0.3,  # encourages more variety
-            max_tokens=20  # limits response length 
+            max_tokens=20  # limits response length
         )
         print("RESPONSE:", response)
         message = response.choices[0].message.content
@@ -221,13 +321,13 @@ def process_question():
     data = request.json
     if not data or "question" not in data:
         return jsonify({"error": "No question received"}), 400
-    
+
     question = data["question"]
     response_count = min(data.get("responseCount", 1), 5)  # Cap at 5 responses
-    
+
     try:
         responses = []
-        
+
         # Generate multiple responses with different personas
         personas = [
             "You're an excited and upbeat Twitch viewer who uses lots of emojis.",
@@ -236,41 +336,38 @@ def process_question():
             "You're a Twitch viewer who's very knowledgeable about gaming and tech.",
             "You're a Twitch viewer who uses lots of slang and Twitch-specific terms.",
         ]
-        
+
         random.shuffle(personas)
-        
+
         # Generate response_count responses using different personas
         for i in range(response_count):
             response = openai_client.chat.completions.create(
                 model="gpt-4",
                 messages=[
                     {
-                        "role": "system", 
+                        "role": "system",
                         "content": personas[i % len(personas)] + "You are one of thousands of active viewers of a live streamer and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps",
                     },
                     {
-                        "role": "user", 
+                        "role": "user",
                         "content": question,
                     }
                 ],
                 temperature=0.7,
-                max_tokens=20
+                max_tokens=20,
             )
-            
+
             message = response.choices[0].message.content
             random_username = random.choice(user_pool)
 
             # Instead of just appending message, append a dictionary
-            responses.append({
-                "username": random_username,
-                "comment": message
-            })
+            responses.append({"username": random_username, "comment": message})
 
             print(f"VOICE RESPONSE {i+1}: {message} from {random_username}")
-        
+
         # Return all responses
         return jsonify({"responses": responses})
-    
+
     except Exception as e:
         print("ERROR PROCESSING QUESTION:", e)
         print("ERROR TYPE:", e.__class__)
