@@ -275,7 +275,7 @@ def generate_comment():
             messages=[
                 {
                     "role": "system",
-                    "content": 'You are one of thousands of active viewers of a live streamer and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps',
+                    "content": "You are one of thousands of active viewers of a live streamer and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps",
                 },
                 {
                     "role": "user",
@@ -293,7 +293,7 @@ def generate_comment():
             ],
             temperature=0.8,  # makes the response more random and fun
             presence_penalty=0.3,  # encourages more variety
-            max_tokens=20  # limits response length
+            max_tokens=20,  # limits response length
         )
         print("RESPONSE:", response)
         message = response.choices[0].message.content
@@ -346,12 +346,13 @@ def process_question():
                 messages=[
                     {
                         "role": "system",
-                        "content": personas[i % len(personas)] + "You are one of thousands of active viewers of a live streamer and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps",
+                        "content": personas[i % len(personas)] 
+                        + "You are one of thousands of active viewers of a live streamer and love to participate in the chat. You are funny, type fast, use twich lingo like pog, lmao, kek, and also ask occasional questions. keep your responses short, less than 5 words. respond in either all lowercase or all caps",
                     },
                     {
                         "role": "user",
                         "content": question,
-                    }
+                    },
                 ],
                 temperature=0.7,
                 max_tokens=20,
