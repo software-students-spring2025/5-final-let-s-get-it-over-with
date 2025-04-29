@@ -41,7 +41,7 @@ def generate_twitch_comment(
                 "content": [
                     {"type": "text", "text": prompt},
                     {
-                        "type": "image_url", 
+                        "type": "image_url",
                         "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"},
                     },
                 ],
