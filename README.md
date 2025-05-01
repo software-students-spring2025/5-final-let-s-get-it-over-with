@@ -35,7 +35,7 @@ Our containerized applications are available on Docker Hub:
 ## Deployed application
 
 This web application is deployed and accessible at:
-- http://142.93.181.40:5001/auth/login
+- [https://fakeittillyoumakeit.live](https://fakeittillyoumakeit.live/auth/login)
 
 ## Developer's Guide
 
